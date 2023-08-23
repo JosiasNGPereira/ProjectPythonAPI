@@ -10,8 +10,8 @@ obj3 = "produto_plano_de_contas"
 url_base = os.getenv('DB_UR')
 cont_pg = 0
 url_tg = f"{url_base}/{obj3}?cursor={cont_pg}"
-def verificar_API(dados):
-    
+
+def verificar_API(dados):    
     if dados is not None:
         if len(dados) > 0:
             for estrutura in dados:
@@ -38,3 +38,5 @@ response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 
 dados = produto_plano_de_contas(url_tg)
 verificar_API(dados)
+logging.info=dados
+print("Script finalizado")

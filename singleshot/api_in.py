@@ -129,6 +129,9 @@ def verificar_API(dados):
 dados = produto_plano_de_contas(url_tg)
 #verificar_API(dados)
 
+print(len(dados))
+print("FIM DO SCRIPT")
+
 
 
 
