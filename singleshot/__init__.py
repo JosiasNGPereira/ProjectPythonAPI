@@ -33,8 +33,8 @@ def main(mytimer: func.TimerRequest) -> None:
     logging.info('Python timer trigger function ran at %s', utc_timestamp)
     print("Executado com sucesso")
 
-produto_plano_de_contas()
 response = requests.get(url_tg)
 response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 
 dados = produto_plano_de_contas(url_tg)
+verificar_API(dados)

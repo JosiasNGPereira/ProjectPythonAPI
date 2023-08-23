@@ -127,11 +127,9 @@ def verificar_API(dados):
          
 #dados = ContasPagarReceber(url_tg) 
 dados = produto_plano_de_contas(url_tg)
-verificar_API(dados)
+#verificar_API(dados)
 
 
-
-print ("TESTE AZURE DEU CERTO")
 
 
 
