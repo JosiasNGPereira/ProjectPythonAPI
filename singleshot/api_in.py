@@ -59,6 +59,7 @@ def produto_plano_de_contas(url_tg):
     return estruturas
 
 
+
 #buscar na api do bubble contas a pagar e receber  
 def ContasPagarReceber(url_tg):
     cont_pg = 0
@@ -114,6 +115,17 @@ def ContasPagarReceber(url_tg):
 
     return estruturas
 
+def verificar_API_and_save(dados, filename):
+    with open(filename, 'w', encoding='utf-8') as file:
+        if dados is not None:
+            if len(dados) > 0:
+                for estrutura in dados:
+                    file.write(str(estrutura) + '\n')  # Escreve cada estrutura no arquivo
+            else:
+                file.write("Nenhum dado encontrado.\n")
+        else:
+            file.write("Falha ao acessar a API.\n")
+
 def verificar_API(dados):
     
     if dados is not None:
@@ -128,6 +140,8 @@ def verificar_API(dados):
 #dados = ContasPagarReceber(url_tg) 
 dados = produto_plano_de_contas(url_tg)
 #verificar_API(dados)
+filename = 'dados_salvos.txt'
+verificar_API_and_save(dados, filename)
 
 print(len(dados))
 print("FIM DO SCRIPT")
