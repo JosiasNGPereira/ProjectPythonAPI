@@ -10,7 +10,7 @@ import azure.functions as func
 obj3 = "produto_plano_de_contas"
 url_base = os.getenv('DB_UR')
 cont_pg = 0
-url_tg = f"{url_base}/{obj3}?cursor={cont_pg}"
+url_tg = f"{url_base}/{obj3}?cursor={cont_pg}" 
 
 def verificar_API_and_save(dados, filename):
     with open(filename, 'w', encoding='utf-8') as file:
@@ -39,9 +39,9 @@ def insert_into_database(data):
     username = os.getenv('NAME')
     password = os.getenv('PASSWORD')
     driver = '{ODBC Driver 18 for SQL Server}'
-    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username}Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 
-    conn = pyodbc.connect(connection_string)
+    #conn = pyodbc.connect(connection_string)
     cursor = conn.cursor()
     #remover os prefixos
     _id_value = data['_id'].replace('id', '')
@@ -59,7 +59,6 @@ def insert_into_database(data):
     Created_Date_value = data['[Created Date]'].replace('[Created Date]', '')
     Modified_Date_value = data['[Modified Date]'].replace('[Modified Date]', '')
     
-
     for estrutura in data:
         query = """
             INSERT INTO PRODUTO_CONTAS (
@@ -108,3 +107,6 @@ verificar_API_and_save(dados, filename)
 insert_into_database(dados)
 
 logging.info=("Script finalizado")
+
+print("Script finalizado")
+logging.basicConfig(level=logging.INFO, filename="RelatorioLogs.log", format="%(asctime)s - %(levelname)s - %(message)s")
