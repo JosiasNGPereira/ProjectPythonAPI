@@ -38,31 +38,47 @@ def insert_into_database(data):
     database = os.getenv('DB_AZ')
     username = os.getenv('NAME')
     password = os.getenv('PASSWORD')
-    driver = '{ODBC Driver 18 for SQL Server}'
+    driver = 'ODBC Driver 17 for SQL Server'
     conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
-
-    #conn = pyodbc.connect(connection_string)
     cursor = conn.cursor()
-    #remover os prefixos
-    _id_value = data['_id'].replace('id', '')
-    planos_de_custos_list_custom_produto_plano_de_custo_value = data['planos_de_custos_list_custom_produto_plano_de_custo'].replace('planos_de_custos_list_custom_produto_plano_de_custo', '')
-    id_produto_centro_decustos_value = data['id_produto_centro_decustos'].replace('id_produto_centro_decustos', '')
-    id_empresa_custom_empresa_value = data['id_empresa_custom_empresa'].replace('id_empresa_custom_empresa', '')
-    visivel_boolean_value = data['visivel_boolean'].replace('visivel_boolean', '')
-    unificador_text_value = data['unificador_text'].replace('unificador_text', '')
-    tipo_plano_de_contas_option_tiposubreceita_value = data['tipo_plano_de_contas_option_tiposubreceita'].replace('tipo_plano_de_contas_option_tiposubreceita', '')
-    plano_de_contas_custom_subreceita_value = data['plano_de_contas_custom_subreceita'].replace('plano_de_contas_custom_subreceita', '')
-    porcentagem_number_value = data['porcentagem_number'].replace('porcentagem_number', '')
-    ativo_boolean_value = data['ativo_boolean'].replace('ativo_boolean', '')
-    id_empresa_text_value = data['id_empresa_text'].replace('id_empresa_text', '')
-    Created_By_value= data['[Created By]'].replace('[Created By]', '')
-    Created_Date_value = data['[Created Date]'].replace('[Created Date]', '')
-    Modified_Date_value = data['[Modified Date]'].replace('[Modified Date]', '')
     
-    for estrutura in data:
+    for item in data:
+        try:
+            _id_value = item['_id'].replace('id', '')
+            planos_de_custos_list_custom_produto_plano_de_custo_value = item['planos_de_custos_list_custom_produto_plano_de_custo'].replace('planos_de_custos_list_custom_produto_plano_de_custo', '')
+            id_produto_centro_decustos_value = item['id_produto_centro_decustos'].replace('id_produto_centro_decustos', '')
+            id_empresa_custom_empresa_value = item['id_empresa_custom_empresa'].replace('id_empresa_custom_empresa', '')
+            visivel_boolean_value = item['visivel_boolean'].replace('visivel_boolean', '')
+            unificador_text_value = item['unificador_text'].replace('unificador_text', '')
+            tipo_plano_de_contas_option_tiposubreceita_value = item['tipo_plano_de_contas_option_tiposubreceita'].replace('tipo_plano_de_contas_option_tiposubreceita', '')
+            plano_de_contas_custom_subreceita_value = item['plano_de_contas_custom_subreceita'].replace('plano_de_contas_custom_subreceita', '')
+            porcentagem_number_value = item['porcentagem_number'].replace('porcentagem_number', '')
+            ativo_boolean_value = item['ativo_boolean'].replace('ativo_boolean', '')
+            id_empresa_text_value = item['id_empresa_text'].replace('id_empresa_text', '')
+            Created_By_value= item['Created By'].replace('Created By', '')
+            Created_Date_value = item['Created Date'].replace('Created Date', '')
+            Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
+        except KeyError:
+            _id_value = ''
+            planos_de_custos_list_custom_produto_plano_de_custo_value = ''
+            id_produto_centro_decustos_value = ''
+            id_empresa_custom_empresa_value = ''
+            visivel_boolean_value = ''
+            unificador_text_value = ''
+            tipo_plano_de_contas_option_tiposubreceita_value = ''
+            plano_de_contas_custom_subreceita_value = ''
+            porcentagem_number_value = ''
+            ativo_boolean_value = ''
+            id_empresa_text_value = ''
+            Created_By_value = ''
+            Created_Date_value = ''
+            Modified_Date_value = ''
+            
+        # Converte o formato ISO 8601 para formato de data/hora reconhecido pelo SQL Server
+        formatted_date = datetime.strptime(item['Date'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%d %H:%M:%S')
         query = """
             INSERT INTO PRODUTO_CONTAS (
-                [Modified Date], [Created Date], [Created By], id_empresa_text,
+                Modified Date, Created Date, Created By, id_empresa_text,
                 ativo_boolean, porcentagem_number, plano_de_contas_custom_subreceita,
                 tipo_plano_de_contas_option_tiposubreceita, unificador_text, visivel_boolean,
                 id_empresa_custom_empresa, id_produto_centro_decustos,
@@ -70,7 +86,7 @@ def insert_into_database(data):
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
-
+        
     values = (
         Modified_Date_value, Created_Date_value, Created_By_value,
         id_empresa_text_value, ativo_boolean_value, porcentagem_number_value,
@@ -79,11 +95,10 @@ def insert_into_database(data):
         id_produto_centro_decustos_value,
         planos_de_custos_list_custom_produto_plano_de_custo_value, _id_value
     )
-
+    
     cursor.execute(query, values)
     conn.commit()
     conn.close()
-
 
 def main(mytimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.datetime.utcnow().replace(

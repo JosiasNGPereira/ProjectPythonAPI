@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+#from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 import requests
 import json
@@ -140,11 +140,11 @@ def verificar_API(dados):
 #dados = ContasPagarReceber(url_tg) 
 dados = produto_plano_de_contas(url_tg)
 #verificar_API(dados)
-filename = 'dados_salvos.txt'
-verificar_API_and_save(dados, filename)
+#filename = 'dados_salvos.txt'
+#verificar_API_and_save(dados, filename)
 
 print(len(dados))
-print("FIM DO SCRIPT")
+print("Saída da pasta api_in.py com sucesso! Consulta dos dados feita")
 
 
 
