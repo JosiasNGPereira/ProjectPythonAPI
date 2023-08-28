@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime 
 import logging
 from api_in import produto_plano_de_contas
 import os
@@ -42,6 +42,17 @@ def insert_into_database(data):
     conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
     cursor = conn.cursor()
     
+    query = """
+        INSERT INTO PRODUTO_CONTAS (
+            [Modified Date], [Created Date], [Created By], id_empresa_text,
+            ativo_boolean, porcentagem_number, plano_de_contas_custom_subreceita,
+            tipo_plano_de_contas_option_tiposubreceita, unificador_text, visivel_boolean,
+            id_empresa_custom_empresa, id_produto_centro_decustos,
+            planos_de_custos_list_custom_produto_plano_de_custo, _id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    
     for item in data:
         try:
             _id_value = item['_id'].replace('id', '')
@@ -58,6 +69,13 @@ def insert_into_database(data):
             Created_By_value= item['Created By'].replace('Created By', '')
             Created_Date_value = item['Created Date'].replace('Created Date', '')
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
+            
+            created_date_obj = datetime.strptime(Created_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            
+            formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            
         except KeyError:
             _id_value = ''
             planos_de_custos_list_custom_produto_plano_de_custo_value = ''
@@ -74,30 +92,18 @@ def insert_into_database(data):
             Created_Date_value = ''
             Modified_Date_value = ''
             
-        # Converte o formato ISO 8601 para formato de data/hora reconhecido pelo SQL Server
-        formatted_date = datetime.strptime(item['Date'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%d %H:%M:%S')
-        query = """
-            INSERT INTO PRODUTO_CONTAS (
-                Modified Date, Created Date, Created By, id_empresa_text,
-                ativo_boolean, porcentagem_number, plano_de_contas_custom_subreceita,
-                tipo_plano_de_contas_option_tiposubreceita, unificador_text, visivel_boolean,
-                id_empresa_custom_empresa, id_produto_centro_decustos,
-                planos_de_custos_list_custom_produto_plano_de_custo, _id
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
+        values = (
+            formatted_modified_date, formatted_created_date, Created_By_value,
+            id_empresa_text_value, ativo_boolean_value, porcentagem_number_value,
+            plano_de_contas_custom_subreceita_value, tipo_plano_de_contas_option_tiposubreceita_value,
+            unificador_text_value, visivel_boolean_value, id_empresa_custom_empresa_value,
+            id_produto_centro_decustos_value,
+            planos_de_custos_list_custom_produto_plano_de_custo_value, _id_value
+        )
         
-    values = (
-        Modified_Date_value, Created_Date_value, Created_By_value,
-        id_empresa_text_value, ativo_boolean_value, porcentagem_number_value,
-        plano_de_contas_custom_subreceita_value, tipo_plano_de_contas_option_tiposubreceita_value,
-        unificador_text_value, visivel_boolean_value, id_empresa_custom_empresa_value,
-        id_produto_centro_decustos_value,
-        planos_de_custos_list_custom_produto_plano_de_custo_value, _id_value
-    )
+        cursor.execute(query, values)
+        conn.commit()
     
-    cursor.execute(query, values)
-    conn.commit()
     conn.close()
 
 def main(mytimer: func.TimerRequest) -> None:
