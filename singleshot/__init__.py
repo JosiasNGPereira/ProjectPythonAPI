@@ -211,7 +211,6 @@ def insert_into_databaseFULL_obj2(data):  # Full dados obj2 contas a pagar
 
     conn.close()
 
-
 def insert_into_databaseFULL_obj1(data):# Full dados obj1 contas a receber
     server = os.getenv('SERVER')
     database = os.getenv('DB_AZ')
@@ -222,10 +221,11 @@ def insert_into_databaseFULL_obj1(data):# Full dados obj1 contas a receber
     cursor = conn.cursor()
 
     query = """
-        INSERT INTO CONTAS_A_PAGAR (
+        INSERT INTO CONTAS_A_RECEBER (
             [Modified Date], [Created Date], [Created By], compet_ncia_date, id_empresa_text,
-            pago_boolean, repeti__es_number, valor_number, vencimento_date, forma_de_pagamento_text, apagado_boolean, entrada_boolean,
-            cliente_custom_cliente1, parcela_number, pedido_de_venda_custom_pedido_de_venda, valor_inicial_number, ativo_boolean,
+            pago_boolean, repeti__es_number, valor_number, vencimento_date, forma_de_pagamento_text, banco_text, data_do_pagamento_date,
+            apagado_boolean, entrada_boolean, cliente_custom_cliente1, parcela_number,
+            pedido_de_venda_custom_pedido_de_venda, plano_de_contas2_custom_subreceita_value, valor_inicial_number, ativo_boolean,
             id_cash_text, agrupado_boolean, parcela_name_text, mes_number, ano_number,
             produto_plano_de_contas_list_custom_produto_plano_de_contas, empresa1_custom_empresa, migrado_boolean, _id
         )
