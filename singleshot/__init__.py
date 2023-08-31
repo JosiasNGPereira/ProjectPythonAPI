@@ -225,7 +225,7 @@ def insert_into_databaseFULL_obj1(data):# Full dados obj1 contas a receber
             [Modified Date], [Created Date], [Created By], compet_ncia_date, id_empresa_text,
             pago_boolean, repeti__es_number, valor_number, vencimento_date, forma_de_pagamento_text, banco_text, data_do_pagamento_date,
             apagado_boolean, entrada_boolean, cliente_custom_cliente1, parcela_number,
-            pedido_de_venda_custom_pedido_de_venda, plano_de_contas2_custom_subreceita_value, valor_inicial_number, ativo_boolean,
+            pedido_de_venda_custom_pedido_de_venda, plano_de_contas2_custom_subreceita, valor_inicial_number, ativo_boolean,
             id_cash_text, agrupado_boolean, parcela_name_text, mes_number, ano_number,
             produto_plano_de_contas_list_custom_produto_plano_de_contas, empresa1_custom_empresa, migrado_boolean, _id
         )
@@ -315,8 +315,119 @@ def insert_into_databaseFULL_obj1(data):# Full dados obj1 contas a receber
 
         cursor.execute(query, values)
         conn.commit()
-
+ 
     conn.close()
+
+def att_bd_azureo_bj3(data):
+    server = os.getenv('SERVER')
+    database = os.getenv('DB_AZ')
+    username = os.getenv('NAME')
+    password = os.getenv('PASSWORD')
+    driver = 'ODBC Driver 17 for SQL Server'
+    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+    cursor = conn.cursor()
+
+    query = """
+        INSERT INTO PRODUTO_CONTAS (
+            [Modified Date], [Created Date], [Created By], id_empresa_text,
+            ativo_boolean, porcentagem_number, plano_de_contas_custom_subreceita,
+            tipo_plano_de_contas_option_tiposubreceita, unificador_text, visivel_boolean,
+            id_empresa_custom_empresa, id_produto_centro_decustos,
+            planos_de_custos_list_custom_produto_plano_de_custo, _id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            [Modified Date] = VALUES([Modified Date]),
+            [Created Date] = VALUES([Created Date]),
+            [Created By] = VALUES([Created By]),
+            id_empresa_text = VALUES(id_empresa_text),
+            ativo_boolean = VALUES(ativo_boolean),
+            porcentagem_number = VALUES(porcentagem_number),
+            plano_de_contas_custom_subreceita = VALUES(plano_de_contas_custom_subreceita),
+            tipo_plano_de_contas_option_tiposubreceita = VALUES(tipo_plano_de_contas_option_tiposubreceita),
+            unificador_text = VALUES(unificador_text),
+            visivel_boolean = VALUES(visivel_boolean),
+            id_empresa_custom_empresa = VALUES(id_empresa_custom_empresa),
+            id_produto_centro_decustos = VALUES(id_produto_centro_decustos),
+            planos_de_custos_list_custom_produto_plano_de_custo = VALUES(planos_de_custos_list_custom_produto_plano_de_custo);
+    """
+    
+    for item in data:
+        try:
+            _id_value = item['_id'].replace('id', '')
+            planos_de_custos_list_custom_produto_plano_de_custo_value = item['planos_de_custos_list_custom_produto_plano_de_custo'].replace('planos_de_custos_list_custom_produto_plano_de_custo', '')
+            id_produto_centro_decustos_value = item['id_produto_centro_decustos'].replace('id_produto_centro_decustos', '')
+            id_empresa_custom_empresa_value = item['id_empresa_custom_empresa'].replace('id_empresa_custom_empresa', '')
+            visivel_boolean_value = item['visivel_boolean'].replace('visivel_boolean', '')
+            unificador_text_value = item['unificador_text'].replace('unificador_text', '')
+            tipo_plano_de_contas_option_tiposubreceita_value = item['tipo_plano_de_contas_option_tiposubreceita'].replace('tipo_plano_de_contas_option_tiposubreceita', '')
+            plano_de_contas_custom_subreceita_value = item['plano_de_contas_custom_subreceita'].replace('plano_de_contas_custom_subreceita', '')
+            porcentagem_number_value = item['porcentagem_number'].replace('porcentagem_number', '')
+            ativo_boolean_value = item['ativo_boolean'].replace('ativo_boolean', '')
+            id_empresa_text_value = item['id_empresa_text'].replace('id_empresa_text', '')
+            Created_By_value= item['Created By'].replace('Created By', '')
+            Created_Date_value = item['Created Date'].replace('Created Date', '')
+            Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
+            
+            created_date_obj = datetime.strptime(Created_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            
+            formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            porcentagem_number_value = float(item['porcentagem_number']) if item['porcentagem_number'] else None
+
+        except KeyError:
+            _id_value = ''
+            planos_de_custos_list_custom_produto_plano_de_custo_value = ''
+            id_produto_centro_decustos_value = ''
+            id_empresa_custom_empresa_value = ''
+            visivel_boolean_value = ''
+            unificador_text_value = ''
+            tipo_plano_de_contas_option_tiposubreceita_value = ''
+            plano_de_contas_custom_subreceita_value = ''
+            porcentagem_number_value = ''
+            ativo_boolean_value = ''
+            id_empresa_text_value = ''
+            Created_By_value = ''
+            Created_Date_value = ''
+            Modified_Date_value = ''
+            
+        values = (
+            formatted_modified_date, formatted_created_date, Created_By_value,
+            id_empresa_text_value, ativo_boolean_value, porcentagem_number_value,
+            plano_de_contas_custom_subreceita_value, tipo_plano_de_contas_option_tiposubreceita_value,
+            unificador_text_value, visivel_boolean_value, id_empresa_custom_empresa_value,
+            id_produto_centro_decustos_value,
+            planos_de_custos_list_custom_produto_plano_de_custo_value, _id_value
+        ) 
+        
+        cursor.execute(query, values)
+        conn.commit()
+    conn.close()
+
+def att_bd_azureo_bj2():
+    server = os.getenv('SERVER')
+    database = os.getenv('DB_AZ')
+    username = os.getenv('NAME')
+    password = os.getenv('PASSWORD')
+    driver = 'ODBC Driver 17 for SQL Server'
+    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+    cursor = conn.cursor()
+
+    
+
+
+def att_bd_azureo_bj1():
+    server = os.getenv('SERVER')
+    database = os.getenv('DB_AZ')
+    username = os.getenv('NAME')
+    password = os.getenv('PASSWORD')
+    driver = 'ODBC Driver 17 for SQL Server'
+    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+    cursor = conn.cursor()
+
+
+
 
 def main(mytimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.datetime.utcnow().replace(
@@ -334,23 +445,33 @@ response = requests.get(url_tg_contas_a_pagar)
 response = requests.get(url_tg_contas_a_receber)
 response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 
-#Chamadas da pasta API_IN.py (BUSCA OS DADOS DO BUBBLE E SALVA NO DICIONARIO)
-#dados = produto_plano_de_contas(url_tg)
+
+###___*** Exemplo de chamada das funções  ***___###
+
+#Chamadas da pasta API_IN.py (BUSCA OS DADOS DO BUBBLE E SALVA NO DICIONARIO) # FULL DADOS
+
+dados = produto_plano_de_contas(url_tg)
 #dados_contas_a_pagar = ContasPagar(url_tg_contas_a_pagar)
-dados_contas_a_receber = ContasReceber(url_tg_contas_a_receber)
+#dados_contas_a_receber = ContasReceber(url_tg_contas_a_receber)
 
-#filename = 'dados_salvos.txt'
-#verificar_API_and_save(dados, filename)
 
-#Chamada da pasta API_IN.py (COMPARA AS PRIMEIRAS 100 PAGINAS DA API DO BUBBLE)
+#Chamada da pasta API_IN.py (COMPARA AS PRIMEIRAS 5 PAGINAS = 500 ITENS DA API DO BUBBLE)
+
 #dados = produto_plano_de_contas_5pg(url_tg)
 #dados_contas_a_pagar = ContasPagar_5pg(url_tg_contas_a_pagar)
 #dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
 
+
 #SALVA TODOS OS DADOS DO BANCO DE DADOS (BACKUP COMPLETO)
-#insert_into_databaseFULL_obj3(dados)
+
+insert_into_databaseFULL_obj3(dados)
 #insert_into_databaseFULL_obj2(dados_contas_a_pagar)
-insert_into_databaseFULL_obj1(dados_contas_a_receber)
+#insert_into_databaseFULL_obj1(dados_contas_a_receber)
+
+
+#filename = 'dados_salvos.txt'
+#verificar_API_and_save(dados, filename)
+
 
 logging.info=("Script finalizado")
 print("Script finalizado")

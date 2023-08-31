@@ -357,7 +357,11 @@ def ContasReceber_5pg(url, num_pg=5): # Pecorre apenas a primeira pagina da API 
     return estruturas 
 
 
-ContasReceber(url_receber)          
+
+
+####*******____TESTE_____*********####
+
+#ContasReceber(url_receber)          
 #ContasPagar(url_pagar) 
 #produto_plano_de_contas(url_tg)
 #verificar_API(dados)
