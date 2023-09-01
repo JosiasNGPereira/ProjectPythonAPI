@@ -450,7 +450,7 @@ response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 
 #Chamadas da pasta API_IN.py (BUSCA OS DADOS DO BUBBLE E SALVA NO DICIONARIO) # FULL DADOS
 
-dados = produto_plano_de_contas(url_tg)
+#dados = produto_plano_de_contas(url_tg)
 #dados_contas_a_pagar = ContasPagar(url_tg_contas_a_pagar)
 #dados_contas_a_receber = ContasReceber(url_tg_contas_a_receber)
 
@@ -462,9 +462,9 @@ dados = produto_plano_de_contas(url_tg)
 #dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
 
 
-#SALVA TODOS OS DADOS DO BANCO DE DADOS (BACKUP COMPLETO)
+#SALVA TODOS OS DADOS DO BANCO DE DADOS (BACKUP COMPLETO) 
 
-insert_into_databaseFULL_obj3(dados)
+#insert_into_databaseFULL_obj3(dados)
 #insert_into_databaseFULL_obj2(dados_contas_a_pagar)
 #insert_into_databaseFULL_obj1(dados_contas_a_receber)
 
