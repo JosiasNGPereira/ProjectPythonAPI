@@ -1,6 +1,6 @@
 from datetime import datetime 
 import logging
-from api_in import produto_plano_de_contas, ContasPagar, ContasReceber, ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg
+from .api_in import produto_plano_de_contas, ContasPagar, ContasReceber, ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg
 import os
 import requests
 import pyodbc
