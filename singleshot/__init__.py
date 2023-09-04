@@ -370,6 +370,11 @@ def att_bd_azure_bj3(data):# Att o banco de dados Azure ou adicionar os novos pr
 """
     
     for item in data:
+        created_date_obj = None
+        modified_date_obj = None 
+        formatted_created_date = None
+        formatted_modified_date = None
+        porcentagem_number_value = None
         _id_value = ''
         planos_de_custos_list_custom_produto_plano_de_custo_value = ''
         id_produto_centro_decustos_value = ''
@@ -491,6 +496,10 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
     
     for item in data:
         
+        created_date_obj = None
+        modified_date_obj = None 
+        formatted_created_date = None
+        formatted_modified_date = None
         _id_value = ''
         migrado_boolean_value = ''
         empresa1_custom_empresa_value = ''
@@ -631,6 +640,10 @@ def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos c
 
     for item in data:
         # Inicialização das variáveis
+        created_date_obj = None
+        modified_date_obj = None 
+        formatted_created_date = None
+        formatted_modified_date = None
         _id_value = ''
         migrado_boolean_value = ''
         empresa1_custom_empresa_value = ''
