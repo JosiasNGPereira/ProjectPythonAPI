@@ -318,7 +318,7 @@ def insert_into_databaseFULL_obj1(data):# Full dados obj1 contas a receber
  
     conn.close()
 
-def att_bd_azureo_bj3(data):# Att o banco de dados Azure ou adicionar os novos produto plano de contas
+def att_bd_azure_bj3(data):# Att o banco de dados Azure ou adicionar os novos produto plano de contas
     server = os.getenv('SERVER')
     database = os.getenv('DB_AZ')
     username = os.getenv('NAME')
@@ -370,6 +370,20 @@ def att_bd_azureo_bj3(data):# Att o banco de dados Azure ou adicionar os novos p
 """
     
     for item in data:
+        _id_value = ''
+        planos_de_custos_list_custom_produto_plano_de_custo_value = ''
+        id_produto_centro_decustos_value = ''
+        id_empresa_custom_empresa_value = ''
+        visivel_boolean_value = ''
+        unificador_text_value = ''
+        tipo_plano_de_contas_option_tiposubreceita_value = ''
+        plano_de_contas_custom_subreceita_value = ''
+        porcentagem_number_value = ''
+        ativo_boolean_value = ''
+        id_empresa_text_value = ''
+        Created_By_value = ''
+        Created_Date_value = ''
+        Modified_Date_value = ''
         try:
             _id_value = item['_id'].replace('id', '')
             planos_de_custos_list_custom_produto_plano_de_custo_value = item['planos_de_custos_list_custom_produto_plano_de_custo'].replace('planos_de_custos_list_custom_produto_plano_de_custo', '')
@@ -394,20 +408,7 @@ def att_bd_azureo_bj3(data):# Att o banco de dados Azure ou adicionar os novos p
             porcentagem_number_value = float(item['porcentagem_number']) if item['porcentagem_number'] else None
 
         except KeyError:
-            _id_value = ''
-            planos_de_custos_list_custom_produto_plano_de_custo_value = ''
-            id_produto_centro_decustos_value = ''
-            id_empresa_custom_empresa_value = ''
-            visivel_boolean_value = ''
-            unificador_text_value = ''
-            tipo_plano_de_contas_option_tiposubreceita_value = ''
-            plano_de_contas_custom_subreceita_value = ''
-            porcentagem_number_value = ''
-            ativo_boolean_value = ''
-            id_empresa_text_value = ''
-            Created_By_value = ''
-            Created_Date_value = ''
-            Modified_Date_value = ''
+            pass
             
         values = (
             formatted_modified_date, formatted_created_date, Created_By_value,
@@ -422,7 +423,7 @@ def att_bd_azureo_bj3(data):# Att o banco de dados Azure ou adicionar os novos p
         conn.commit()
     conn.close()
 
-def att_bd_azureo_bj2(data):# Att o banco de dados Azure ou adicionar os novos contas a pagar
+def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos contas a pagar
     server = os.getenv('SERVER')
     database = os.getenv('DB_AZ')
     username = os.getenv('NAME')
@@ -568,7 +569,7 @@ def att_bd_azureo_bj2(data):# Att o banco de dados Azure ou adicionar os novos c
     conn.close()
 
 
-def att_bd_azureo_bj1(data): # Att o banco de dados Azure ou adicionar os novos contas a receber
+def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos contas a receber
     server = os.getenv('SERVER')
     database = os.getenv('DB_AZ')
     username = os.getenv('NAME')
@@ -754,9 +755,9 @@ dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
 #insert_into_databaseFULL_obj2(dados_contas_a_pagar)
 #insert_into_databaseFULL_obj1(dados_contas_a_receber)
 
-att_bd_azureo_bj3(dados)
-att_bd_azureo_bj3(dados_contas_a_pagar)
-att_bd_azureo_bj3(dados_contas_a_receber)
+att_bd_azure_bj3(dados)
+att_bd_azure_bj3(dados_contas_a_pagar)
+att_bd_azure_bj3(dados_contas_a_receber)
 
 
 #filename = 'dados_salvos.txt'

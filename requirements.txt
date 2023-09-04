@@ -6,3 +6,4 @@ azure-functions
 python-dotenv==1.0.0
 flask==2.2.3
 requests==2.28.2
+pyodbc
