@@ -1,12 +1,12 @@
 from datetime import datetime 
 import logging
-from .api_in import produto_plano_de_contas, ContasPagar, ContasReceber, ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg
+from api_in import  ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg 
 import os
 import requests
 import pyodbc
 
 import azure.functions as func
-
+#produto_plano_de_contas, ContasPagar, ContasReceber,
 obj3 = "produto_plano_de_contas"
 obj2 = "contas a pagar"
 obj1 = "contas a receber"
@@ -439,11 +439,11 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
 
     query = """
         MERGE INTO CONTAS_A_PAGAR AS target
-        USING (VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)) AS source (
+        USING (VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )) AS source (
             [Modified Date], [Created Date], [Created By], [compet_ncia_date], [id_empresa_text],
             [pago_boolean], [repeti__es_number], [valor_number], [vencimento_date], [forma_de_pagamento_text],
             [apagado_boolean], [entrada_boolean], [cliente_custom_cliente1], [parcela_number],
-            [pedido_de_vendas_custom_pedido_de_venda], [valor_inicial_number], [ativo_boolean], [id_cash_text],
+            [pedido_de_venda_custom_pedido_de_venda], [valor_inicial_number], [ativo_boolean], [id_cash_text],
             [agrupado_boolean], [parcela_name_text], [mes_number], [ano_number],
             [produto_plano_de_contas_list_custom_produto_plano_de_contas], [empresa1_custom_empresa], [migrado_boolean], [_id]
             )
@@ -464,7 +464,7 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
             [entrada_boolean] = source.[entrada_boolean],
             [cliente_custom_cliente1] = source.[cliente_custom_cliente1],
             [parcela_number] = source.[parcela_number],
-            [pedido_de_vendas_custom_pedido_de_venda] = source.[pedido_de_vendas_custom_pedido_de_venda],
+            [pedido_de_venda_custom_pedido_de_venda] = source.[pedido_de_venda_custom_pedido_de_venda],
             [valor_inicial_number] = source.[valor_inicial_number],
             [ativo_boolean] = source.[ativo_boolean],
             [id_cash_text] = source.[id_cash_text],
@@ -480,7 +480,7 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
             [Modified Date], [Created Date], [Created By], [compet_ncia_date], [id_empresa_text],
             [pago_boolean], [repeti__es_number], [valor_number], [vencimento_date], [forma_de_pagamento_text],
             [apagado_boolean], [entrada_boolean], [cliente_custom_cliente1], [parcela_number],
-            [pedido_de_vendas_custom_pedido_de_venda], [valor_inicial_number], [ativo_boolean], [id_cash_text],
+            [pedido_de_venda_custom_pedido_de_venda], [valor_inicial_number], [ativo_boolean], [id_cash_text],
             [agrupado_boolean], [parcela_name_text], [mes_number], [ano_number],
             [produto_plano_de_contas_list_custom_produto_plano_de_contas], [empresa1_custom_empresa], [migrado_boolean], [_id]
         )
@@ -488,7 +488,7 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
             source.[Modified Date], source.[Created Date], source.[Created By], source.[compet_ncia_date], source.[id_empresa_text],
             source.[pago_boolean], source.[repeti__es_number], source.[valor_number], source.[vencimento_date], source.[forma_de_pagamento_text],
             source.[apagado_boolean], source.[entrada_boolean], source.[cliente_custom_cliente1], source.[parcela_number],
-            source.[pedido_de_vendas_custom_pedido_de_venda], source.[valor_inicial_number], source.[ativo_boolean], source.[id_cash_text],
+            source.[pedido_de_venda_custom_pedido_de_venda], source.[valor_inicial_number], source.[ativo_boolean], source.[id_cash_text],
             source.[agrupado_boolean], source.[parcela_name_text], source.[mes_number], source.[ano_number],
             source.[produto_plano_de_contas_list_custom_produto_plano_de_contas], source.[empresa1_custom_empresa], source.[migrado_boolean], source.[_id]
         );
@@ -511,7 +511,7 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
         id_cash_text_value = ''
         ativo_boolean_value = ''
         valor_inicial_number_value = ''
-        pedido_de_vendas_custom_pedido_de_venda_value = ''
+        pedido_de_venda_custom_pedido_de_venda_value = ''
         parcela_number_value = ''
         cliente_custom_cliente1_value = ''
         entrada_boolean_value = ''
@@ -539,7 +539,7 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
             id_cash_text_value = item['id_cash_text'].replace('id_cash_text', '')
             ativo_boolean_value = item['ativo_boolean'].replace('ativo_boolean', '')
             valor_inicial_number_value = item['valor_inicial_number'].replace('valor_inicial_number', '')
-            pedido_de_vendas_custom_pedido_de_venda_value = item['pedido_de_venda_custom_pedido_de_venda'].replace('pedido_de_venda_custom_pedido_de_venda', '')
+            pedido_de_venda_custom_pedido_de_venda_value = item['pedido_de_venda_custom_pedido_de_venda'].replace('pedido_de_venda_custom_pedido_de_venda', '')
             parcela_number_value = item['parcela_number'].replace('parcela_number', '')
             cliente_custom_cliente1_value = item['cliente_custom_cliente1'].replace('cliente_custom_cliente1', '')
             entrada_boolean_value = item['entrada_boolean'].replace('entrada_boolean', '')
@@ -568,7 +568,7 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
             formatted_modified_date, formatted_created_date, Created_By_value,compet_ncia_date_value,
             id_empresa_text_value,pago_boolean_value,repeti__es_number_value,valor_number_value,vencimento_date_value,forma_de_pagamento_text_value,
             apagado_boolean_value,entrada_boolean_value,cliente_custom_cliente1_value,parcela_number_value,
-            pedido_de_vendas_custom_pedido_de_venda_value,valor_inicial_number_value,ativo_boolean_value,id_cash_text_value,
+            pedido_de_venda_custom_pedido_de_venda_value,valor_inicial_number_value,ativo_boolean_value,id_cash_text_value,
             agrupado_boolean_value,parcela_name_text_value,mes_number_value,ano_number_value,
             produto_plano_de_contas_list_custom_produto_plano_de_contas_value,empresa1_custom_empresa_value,migrado_boolean_value, _id_value
         )
@@ -577,8 +577,7 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
         conn.commit()
     conn.close()
 
-
-def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos contas a receber
+def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos contas a pagar
     server = os.getenv('SERVER')
     database = os.getenv('DB_AZ')
     username = os.getenv('NAME')
@@ -587,56 +586,52 @@ def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos c
     conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
     cursor = conn.cursor()
 
-    query = """
-        MERGE INTO CONTAS_A_RECEBER AS target
-        USING (VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)) AS source (
-            [Modified Date], [Created Date], [Created By], [compet_ncia_date], [id_empresa_text],
-            [pago_boolean], [repeti__es_number], [valor_number], [vencimento_date], [forma_de_pagamento_text],
-            [apagado_boolean], [entrada_boolean], [cliente_custom_cliente1], [parcela_number],
-            [pedido_de_vendas_custom_pedido_de_venda], [valor_inicial_number], [ativo_boolean], [id_cash_text],
-            [agrupado_boolean], [parcela_name_text], [mes_number], [ano_number],
-            [produto_plano_de_contas_list_custom_produto_plano_de_contas], [empresa1_custom_empresa], [migrado_boolean], [_id]
-        )
-        ON target._id = source._id
-        WHEN MATCHED THEN
-            UPDATE SET
-            [Modified Date] = source.[Modified Date],
-            [Created Date] = source.[Created Date],
-            [Created By] = source.[Created By],
-            [compet_ncia_date] = source.[compet_ncia_date],
-            [id_empresa_text] = source.[id_empresa_text],
-            [pago_boolean] = source.[pago_boolean],
-            [repeti__es_number] = source.[repeti__es_number],
-            [valor_number] = source.[valor_number],
-            [vencimento_date] = source.[vencimento_date],
-            [forma_de_pagamento_text] = source.[forma_de_pagamento_text],
-            [apagado_boolean] = source.[apagado_boolean],
-            [entrada_boolean] = source.[entrada_boolean],
-            [cliente_custom_cliente1] = source.[cliente_custom_cliente1],
-            [parcela_number] = source.[parcela_number],
-            [pedido_de_vendas_custom_pedido_de_venda] = source.[pedido_de_vendas_custom_pedido_de_venda],
-            [valor_inicial_number] = source.[valor_inicial_number],
-            [ativo_boolean] = source.[ativo_boolean],
-            [id_cash_text] = source.[id_cash_text],
-            [agrupado_boolean] = source.[agrupado_boolean],
-            [parcela_name_text] = source.[parcela_name_text],
-            [mes_number] = source.[mes_number],
-            [ano_number] = source.[ano_number],
-            [produto_plano_de_contas_list_custom_produto_plano_de_contas] = source.[produto_plano_de_contas_list_custom_produto_plano_de_contas],
-            [empresa1_custom_empresa] = source.[empresa1_custom_empresa],
-            [migrado_boolean] = source.[migrado_boolean]
-        WHEN NOT MATCHED THEN
-            INSERT (
-                [Modified Date], [Created Date], [Created By], [compet_ncia_date], [id_empresa_text],
-                [pago_boolean], [repeti__es_number], [valor_number], [vencimento_date], [forma_de_pagamento_text],
-                [apagado_boolean], [entrada_boolean], [cliente_custom_cliente1], [parcela_number],
-                [pedido_de_vendas_custom_pedido_de_venda], [valor_inicial_number], [ativo_boolean], [id_cash_text],
-                [agrupado_boolean], [parcela_name_text], [mes_number], [ano_number],
-                [produto_plano_de_contas_list_custom_produto_plano_de_contas], [empresa1_custom_empresa], [migrado_boolean], [_id]
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    query_select = "SELECT COUNT(*) FROM CONTAS_A_RECEBER WHERE _id = ?"
+    # Consulta para inserir novos registros
+    query_insert = """
+    INSERT INTO CONTAS_A_RECEBER (
+        [Modified Date], [Created Date], [Created By], [compet_ncia_date], [id_empresa_text],
+        [pago_boolean], [repeti__es_number], [valor_number], [vencimento_date], [forma_de_pagamento_text], [banco_text], [data_do_pagamento_date],
+        [apagado_boolean], [entrada_boolean], [cliente_custom_cliente1], [parcela_number],
+        [pedido_de_venda_custom_pedido_de_venda], [plano_de_contas2_custom_subreceita], [valor_inicial_number], [ativo_boolean], [id_cash_text],
+        [agrupado_boolean], [parcela_name_text], [mes_number], [ano_number],
+        [produto_plano_de_contas_list_custom_produto_plano_de_contas], [empresa1_custom_empresa], [migrado_boolean], [_id]
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     """
-    
+    # Consulta para atualizar registros existentes
+    query_update = """
+    UPDATE CONTAS_A_RECEBER
+    SET
+        [Modified Date] = ?,
+        [Created Date] = ?,
+        [Created By] = ?,
+        [compet_ncia_date] = ?,
+        [id_empresa_text] = ?,
+        [pago_boolean] = ?,
+        [repeti__es_number] = ?,
+        [valor_number] = ?,
+        [vencimento_date] = ?,
+        [forma_de_pagamento_text] = ?,
+        [banco_text] = ?,
+        [data_do_pagamento_date] = ?,
+        [apagado_boolean] = ?,
+        [entrada_boolean] = ?,
+        [cliente_custom_cliente1] = ?,
+        [parcela_number] = ?,
+        [pedido_de_venda_custom_pedido_de_venda] = ?,
+        [plano_de_contas2_custom_subreceita] = ?,
+        [valor_inicial_number] = ?,
+        [ativo_boolean] = ?,
+        [id_cash_text] = ?,
+        [agrupado_boolean] = ?,
+        [parcela_name_text] = ?,
+        [mes_number] = ?,
+        [ano_number] = ?,
+        [produto_plano_de_contas_list_custom_produto_plano_de_contas] = ?,
+        [empresa1_custom_empresa] = ?,
+        [migrado_boolean] = ?
+    WHERE _id = ?;
+    """
 
     for item in data:
         # Inicialização das variáveis
@@ -656,7 +651,7 @@ def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos c
         ativo_boolean_value = ''
         valor_inicial_number_value = ''
         plano_de_contas2_custom_subreceita_value = ''
-        pedido_de_vendas_custom_pedido_de_venda_value = ''
+        pedido_de_venda_custom_pedido_de_venda_value = ''
         parcela_number_value = ''
         cliente_custom_cliente1_value = ''
         entrada_boolean_value = ''
@@ -673,6 +668,38 @@ def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos c
         Created_By_value = ''
         Created_Date_value = ''
         Modified_Date_value = ''
+        _id_value = item['_id'].replace('id', '')
+
+        cursor.execute(query_select, (_id_value,))
+        record_count = cursor.fetchone()[0]
+        if record_count > 0:
+            # Registro já existe, atualize
+            # (defina os valores a serem atualizados)
+            values_update = (
+                formatted_modified_date, formatted_created_date, Created_By_value, compet_ncia_date_value,
+                id_empresa_text_value, pago_boolean_value, repeti__es_number_value, valor_number_value,
+                vencimento_date_value, forma_de_pagamento_text_value, banco_text_value, data_do_pagamento_date_value, apagado_boolean_value, entrada_boolean_value,
+                cliente_custom_cliente1_value, parcela_number_value, pedido_de_venda_custom_pedido_de_venda_value,plano_de_contas2_custom_subreceita_value,
+                valor_inicial_number_value, ativo_boolean_value, id_cash_text_value, agrupado_boolean_value,
+                parcela_name_text_value, mes_number_value, ano_number_value,
+                produto_plano_de_contas_list_custom_produto_plano_de_contas_value, empresa1_custom_empresa_value,
+                migrado_boolean_value, _id_value
+            )
+            cursor.execute(query_update, values_update)
+        else: 
+            # Registro não existe, insira
+            # (defina os valores a serem inseridos)
+            values_insert = (
+                formatted_modified_date, formatted_created_date, Created_By_value, compet_ncia_date_value,
+                id_empresa_text_value, pago_boolean_value, repeti__es_number_value, valor_number_value,
+                vencimento_date_value, forma_de_pagamento_text_value, banco_text_value, data_do_pagamento_date_value, apagado_boolean_value, entrada_boolean_value,
+                cliente_custom_cliente1_value, parcela_number_value, pedido_de_venda_custom_pedido_de_venda_value,plano_de_contas2_custom_subreceita_value,
+                valor_inicial_number_value, ativo_boolean_value, id_cash_text_value, agrupado_boolean_value,
+                parcela_name_text_value, mes_number_value, ano_number_value,
+                produto_plano_de_contas_list_custom_produto_plano_de_contas_value, empresa1_custom_empresa_value,
+                migrado_boolean_value, _id_value
+            )
+            cursor.execute(query_insert, values_insert)
 
         try:
             _id_value = item['_id'].replace('id', '')
@@ -687,7 +714,7 @@ def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos c
             ativo_boolean_value = item['ativo_boolean'].replace('ativo_boolean', '')
             valor_inicial_number_value = item['valor_inicial_number'].replace('valor_inicial_number', '')
             plano_de_contas2_custom_subreceita_value = item['plano_de_contas2_custom_subreceita'].replace('plano_de_contas2_custom_subreceita','')
-            pedido_de_vendas_custom_pedido_de_venda_value = item['pedido_de_venda_custom_pedido_de_venda'].replace('pedido_de_venda_custom_pedido_de_venda', '')
+            pedido_de_venda_custom_pedido_de_venda_value = item['pedido_de_venda_custom_pedido_de_venda'].replace('pedido_de_venda_custom_pedido_de_venda', '')
             parcela_number_value = item['parcela_number'].replace('parcela_number', '')
             cliente_custom_cliente1_value = item['cliente_custom_cliente1'].replace('cliente_custom_cliente1', '')
             entrada_boolean_value = item['entrada_boolean'].replace('entrada_boolean', '')
@@ -710,22 +737,12 @@ def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos c
 
             formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
             formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
-
+            
         except KeyError:
             pass
 
-        values = (
-            formatted_modified_date, formatted_created_date, Created_By_value,compet_ncia_date_value,
-            id_empresa_text_value,pago_boolean_value,repeti__es_number_value,valor_number_value,vencimento_date_value,forma_de_pagamento_text_value,
-            banco_text_value, data_do_pagamento_date_value, apagado_boolean_value,entrada_boolean_value,cliente_custom_cliente1_value,parcela_number_value,
-            pedido_de_vendas_custom_pedido_de_venda_value, plano_de_contas2_custom_subreceita_value, valor_inicial_number_value,ativo_boolean_value,id_cash_text_value,
-            agrupado_boolean_value,parcela_name_text_value,mes_number_value,ano_number_value,
-            produto_plano_de_contas_list_custom_produto_plano_de_contas_value,empresa1_custom_empresa_value,migrado_boolean_value, _id_value
-        )
-
-        cursor.execute(query, values)
         conn.commit()
- 
+
     conn.close()
 
 
@@ -769,8 +786,8 @@ dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
 #insert_into_databaseFULL_obj1(dados_contas_a_receber)
 
 att_bd_azure_bj3(dados)
-att_bd_azure_bj3(dados_contas_a_pagar)
-att_bd_azure_bj3(dados_contas_a_receber)
+att_bd_azure_bj2(dados_contas_a_pagar)
+att_bd_azure_bj1(dados_contas_a_receber)
 
 
 #filename = 'dados_salvos.txt'

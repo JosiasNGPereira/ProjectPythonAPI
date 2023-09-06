@@ -1,4 +1,4 @@
- #from flask import Flask, jsonify, request
+#from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 import requests
 import json
@@ -368,9 +368,9 @@ def ContasReceber_5pg(url, num_pg=5): # Pecorre apenas a primeira pagina da API 
 #filename = 'dados_salvos.txt'
 #verificar_API_and_save(dados, filename)
 
-#dados1 = produto_plano_de_contas_5pg(url_produto)
-#dados2 = ContasPagarReceber_5pg(url_pagar, num_pg=5)
-#dados3 = ContasReceber_5pg(url_receber, num_pg=5)
+dados1 = produto_plano_de_contas_5pg(url_produto)
+dados2 = ContasPagar_5pg(url_pagar, num_pg=5)
+dados3 = ContasReceber_5pg(url_receber, num_pg=5)
 
 #print(len(dados1))
 #print(len(dados2))
