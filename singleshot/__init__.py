@@ -1,11 +1,11 @@
 from datetime import datetime 
 import logging
-from api_in import  ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg 
+from .api_in import  ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg 
 import os
 import requests
 import pyodbc
-
 import azure.functions as func
+
 #produto_plano_de_contas, ContasPagar, ContasReceber,
 obj3 = "produto_plano_de_contas"
 obj2 = "contas a pagar"
@@ -405,7 +405,7 @@ def att_bd_azure_bj3(data):# Att o banco de dados Azure ou adicionar os novos pr
             Created_Date_value = item['Created Date'].replace('Created Date', '')
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
             
-            created_date_obj = datetime.strptime(Created_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            created_date_obj = datetime.strptime(Created_Date_value,'%Y-%m-%dT%H:%M:%S.%fZ')
             modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
             
             formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
