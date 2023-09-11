@@ -1,4 +1,4 @@
-from datetime import datetime 
+from datetime import datetime, timezone
 import logging
 from .api_in import  ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg 
 import os
@@ -16,6 +16,16 @@ cont_pg = 0
 url_tg = f"{url_base}/{obj3}?cursor={cont_pg}" 
 url_tg_contas_a_pagar = f"{url_base}/{obj2}?cursor={cont_pg}" 
 url_tg_contas_a_receber = f"{url_base}/{obj1}?cursor={cont_pg}"
+
+logging.basicConfig(level=logging.INFO, filename="RelatorioLogs.log", format="%(asctime)s - %(levelname)s - %(message)s")
+
+def parse_custom_datetime(datetime_str):
+    date_part, time_part = datetime_str.split('T')
+    year, month, day = map(int, date_part.split('-'))
+    hour, minute, second = map(float, time_part[:-1].split(':'))  # Removendo o último caractere 'Z' e convertendo para float
+    return datetime(year, month, day, int(hour), int(minute), int(second))
+
+
 
 def verificar_API_and_save(dados, filename):
     with open(filename, 'w', encoding='utf-8') as file:
@@ -74,8 +84,8 @@ def insert_into_databaseFULL_obj3(data):# Full dados obj3 produto_plano_de_conta
             Created_Date_value = item['Created Date'].replace('Created Date', '')
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
             
-            created_date_obj = datetime.strptime(Created_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
-            modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
             
             formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
             formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
@@ -188,8 +198,8 @@ def insert_into_databaseFULL_obj2(data):  # Full dados obj2 contas a pagar
             Created_Date_value = item['Created Date'].replace('Created Date', '')
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
 
-            created_date_obj = datetime.strptime(Created_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
-            modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
 
             formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
             formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
@@ -295,8 +305,8 @@ def insert_into_databaseFULL_obj1(data):# Full dados obj1 contas a receber
             Created_Date_value = item['Created Date'].replace('Created Date', '')
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
 
-            created_date_obj = datetime.strptime(Created_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
-            modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
 
             formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
             formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
@@ -405,8 +415,8 @@ def att_bd_azure_bj3(data):# Att o banco de dados Azure ou adicionar os novos pr
             Created_Date_value = item['Created Date'].replace('Created Date', '')
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
             
-            created_date_obj = datetime.strptime(Created_Date_value,'%Y-%m-%dT%H:%M:%S.%fZ')
-            modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
             
             formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
             formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
@@ -427,6 +437,7 @@ def att_bd_azure_bj3(data):# Att o banco de dados Azure ou adicionar os novos pr
         cursor.execute(query, values)
         conn.commit()
     conn.close()
+    logging.info('Função obj3 Finalizada')
 
 def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos contas a pagar
     server = os.getenv('SERVER')
@@ -555,8 +566,8 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
             Created_Date_value = item['Created Date'].replace('Created Date', '')
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
 
-            created_date_obj = datetime.strptime(Created_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
-            modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
 
             formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
             formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
@@ -576,6 +587,7 @@ def att_bd_azure_bj2(data):# Att o banco de dados Azure ou adicionar os novos co
         cursor.execute(query, values)
         conn.commit()
     conn.close()
+    logging.info('Função obj2 Finalizada')
 
 def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos contas a pagar
     server = os.getenv('SERVER')
@@ -732,8 +744,8 @@ def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos c
             Created_Date_value = item['Created Date'].replace('Created Date', '')
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
 
-            created_date_obj = datetime.strptime(Created_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
-            modified_date_obj = datetime.strptime(Modified_Date_value, '%Y-%m-%dT%H:%M:%S.%fZ')
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
 
             formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
             formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
@@ -744,22 +756,22 @@ def att_bd_azure_bj1(data): # Att o banco de dados Azure ou adicionar os novos c
         conn.commit()
 
     conn.close()
+    logging.info('Função obj1 Finalizada')
 
 
 def main(mytimer: func.TimerRequest) -> None:
-    utc_timestamp = datetime.datetime.utcnow().replace(
-        tzinfo=datetime.timezone.utc).isoformat()
+    utc_timestamp = datetime.now(timezone.utc).isoformat()
 
     if mytimer.past_due:
-        logging.info('The timer is past due!')
+        logging.info('O temporizador está atrasado!')
         print("Timer atrasado")
 
-    logging.info('Python timer trigger function ran at %s', utc_timestamp)
+    logging.info('A função de acionamento do temporizador Python foi executada em %s', utc_timestamp)
     print("Executado com sucesso")
 
 response = requests.get(url_tg)
 response = requests.get(url_tg_contas_a_pagar)
-response = requests.get(url_tg_contas_a_receber)
+response = requests.get(url_tg_contas_a_receber)    
 response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 
 
@@ -794,6 +806,4 @@ att_bd_azure_bj1(dados_contas_a_receber)
 #verificar_API_and_save(dados, filename)
 
 
-logging.info=("Script finalizado")
-print("Script finalizado")
-logging.basicConfig(level=logging.INFO, filename="RelatorioLogs.log", format="%(asctime)s - %(levelname)s - %(message)s")
+logging.info("Script finalizado com sucesso")
