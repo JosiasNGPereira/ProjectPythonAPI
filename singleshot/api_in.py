@@ -20,7 +20,10 @@ cont_pg = 0
 url_produto = f"{url_base}/{obj3}?cursor={cont_pg}"
 url_pagar = f"{url_base}/{obj1}?cursor={cont_pg}"
 url_receber = f"{url_base}/{obj2}?cursor={cont_pg}"
-url_receber = f"{url_base}/{obj4}?cursor={cont_pg}"
+url_movimentacao_financeira = f"{url_base}/{obj4}?cursor={cont_pg}"
+url_Centro_de_custos = f"{url_base}/{obj5}?cursor={cont_pg}"
+url_SubPlanodecontas = f"{url_base}/{obj6}?cursor={cont_pg}"
+url_produto_centro_de_custo = f"{url_base}/{obj7}?cursor={cont_pg}"
 
 def produto_plano_de_contas(url_tg): # Percorre toda a API do Bubble (todas as paginas)
     cont_pg = 0
@@ -123,6 +126,121 @@ def ContasReceber(url_tg): # Percorre toda a API do Bubble (todas as paginas)
         
         
 
+    return estruturas
+
+def Movimentacao_financeira(url_tg):
+    cont_pg = 0
+    estruturas = []
+
+    remaining = 1
+    url_tg = f"{url_base}/{obj4}?cursor={cont_pg}"
+    while remaining > 0:
+        response = requests.get(url_tg)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = create_estruturaMovimentacao_financeira(item)
+                    estruturas.append(estrutura)   
+                remaining = data.get("response", {}).get("remaining", 0)
+                
+                cont_pg += 100
+                url_tg = f"{url_base}/{obj4}?cursor={cont_pg}"
+            print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+            #time.sleep(1)
+        
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+    print("MOVIMENTAÇÃO DINANCEIRA FINALIZADO")     
+    return estruturas
+
+def Centro_de_custos(url_tg):
+    cont_pg = 0
+    estruturas = []
+
+    remaining = 1
+    url_tg = f"{url_base}/{obj5}?cursor={cont_pg}"
+    while remaining > 0:
+        response = requests.get(url_tg)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = create_estruturaCentro_de_custos(item)
+                    estruturas.append(estrutura)   
+                remaining = data.get("response", {}).get("remaining", 0)
+                cont_pg += 10
+                url_tg = f"{url_base}/{obj5}?cursor={cont_pg}"
+            print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+            time.sleep(1)
+        
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+    print("CENTRO CUSTO FINALIZADO")      
+    return estruturas
+
+def SubPlanodecontas(utl_tg):
+    cont_pg = 0
+    estruturas = []
+
+    remaining = 1
+    url_tg = f"{url_base}/{obj6}?cursor={cont_pg}"
+    while remaining > 0:
+        response = requests.get(url_tg)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = create_estruturaSubPlanodecontas(item)
+                    estruturas.append(estrutura)   
+                remaining = data.get("response", {}).get("remaining", 0)
+                
+                cont_pg += 100
+                url_tg = f"{url_base}/{obj6}?cursor={cont_pg}"
+            print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+            time.sleep(1)
+        
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+    print("SUB PLANO DE CONTAS FINALIZADO")  
+    return estruturas
+
+def produto_centro_de_custo(utl_tg):
+    cont_pg = 0
+    estruturas = []
+
+    remaining = 1
+    url_tg = f"{url_base}/{obj7}?cursor={cont_pg}"
+    while remaining > 0:
+        response = requests.get(url_tg)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = create_estrutura_produto_centro_de_custo(item)
+                    estruturas.append(estrutura)   
+                remaining = data.get("response", {}).get("remaining", 0)
+                
+                cont_pg += 100
+                url_tg = f"{url_base}/{obj7}?cursor={cont_pg}"
+            print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+            #time.sleep(1)
+        
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+    print("PRODUTO CENTRO DE CUSTO FINALIZADO")    
     return estruturas
 
 def verificar_API_and_save(dados, filename): # Salva a busca da API em um .TXT para verificação
@@ -400,16 +518,16 @@ def create_estruturaMovimentacao_financeira(item):
         "cliente_custom_cliente1": str(item.get("cliente_custom_cliente1", "")),
         "conciliado_boolean": str(item.get("conciliado_boolean", "")),
         "contas_a_receber_custom_contas_a_receber": str(item.get("contas_a_receber_custom_contas_a_receber", "")),
-        "data_date": str(item.get("date_date", "")),
-        "id_empres_text": str(item.get("id_empresa_text", "")),
+        "data_date": str(item.get("data_date", "")),
+        "id_empresa_text": str(item.get("id_empresa_text", "")),
         "tipo_option_tipo_de_conta": str(item.get("tipo_option_tipo_de_conta", "")),
-        "valor_number": str(item.get("valor_number", "")),
+        "valor_number": item.get("valor_number", 0),
         "descricao_text": str(item.get("descricao_text", "")),
         "plano_de_contas_custom_subreceita": str(item.get("plano_de_contas_custom_subreceita", "")),
-        "acrescimo_number": str(item.get("acrescimo_number", "")),
-        "decrescimo_number": str(item.get("descrescimo_number", "")),
-        "mes_number": str(item.get("mes_number", "")),
-        "ano_number": str(item.get("ano_number", "")),
+        "acrescimo_number": item.get("acrescimo_number", 0),
+        "decrescimo_number": item.get("decrescimo_number", 0),
+        "mes_number": item.get("mes_number", 0),
+        "ano_number": item.get("ano_number", 0),
         "empresa_custom_empresa": str(item.get("empresa_custom_empresa", "")),
         "migrado_boolean": str(item.get("migrado_boolean", "")),
         "_id": str(item.get("_id", ""))
@@ -443,14 +561,14 @@ def create_estruturaSubPlanodecontas(item):
     }
     return estrutura
 
-def create_estruturaproduto_centro_de_custo(item):
+def create_estrutura_produto_centro_de_custo(item):
     estrutura = {
         "ativo_boolean": str(item.get("ativo_boolean", "")),    
         "Created By": str(item.get("Created By", "")),
         "Created Date": str(item.get("Created Date", "")),
         "Modified Date": str(item.get("Modified Date", "")),
         "plano_de_custo_custom_plano_de_custo": str(item.get("plano_de_custo_custom_plano_de_custo", "")),
-        "porcentagem_number": str(item.get("porcentagem_number", "")),
+        "porcentagem_number": item.get("porcentagem_number", 1),
         "_id": str(item.get("_id", ""))
     }
     return estrutura
@@ -466,6 +584,10 @@ def create_estruturaproduto_centro_de_custo(item):
 #fulldados1 = produto_plano_de_contas(url_produto)
 #fulldados2 = ContasPagar(url_pagar)
 #fulldados3 = ContasReceber(url_receber)
+#fulldados4 = Movimentacao_financeira(url_movimentacao_financeira)
+#fulldados5 = Centro_de_custos(url_Centro_de_custos)
+#fulldados6 = SubPlanodecontas(url_SubPlanodecontas)
+#fulldados7 = produto_centro_de_custo(url_produto_centro_de_custo)
 #dados1 = produto_plano_de_contas_5pg(url_produto)
 #dados2 = ContasPagar_5pg(url_pagar)
 #dados3 = ContasReceber_5pg(url_receber)
@@ -474,9 +596,14 @@ def create_estruturaproduto_centro_de_custo(item):
 #print(len(dados2))  
 #print(len(dados3))
 
+#print(f"TOTAL DE ITENS MOVIMENTACAO FINANCEIRO: {len(fulldados4)}")
+#print(f"TOTAL DE ITENS CENTRO DE CUSTO: {len(fulldados5)}")
+#print(f"TOTAL DE ITENS SUB PLANO DE CONTAS: {len(fulldados6)}")
+#print(f"TOTAL DE ITENS PRODUTO CENTRO DE CUSTO: {len(fulldados7)}")
+
 #verificar_API(dados2)
-#filename = 'dados_Produto_plano_contas.txt'
-#verificar_API_and_save(fulldados1, filename)
+#filename = 'MOVIMENTACAO_FINANCEIRA.txt'
+#verificar_API_and_save(fulldados4, filename)
 #print(len(fulldados1))
 
 

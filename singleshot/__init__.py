@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import logging
-from .api_in import produto_plano_de_contas, ContasPagar,produto_plano_de_contas, ContasPagar, ContasReceber,ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg
+from api_in import produto_plano_de_contas, ContasPagar,produto_plano_de_contas,ContasPagar, ContasReceber,ContasPagar_5pg, ContasReceber_5pg, produto_plano_de_contas_5pg,Movimentacao_financeira,Centro_de_custos, SubPlanodecontas,produto_centro_de_custo
 import os
 import requests
 import pyodbc
@@ -12,13 +12,20 @@ import json
 obj3 = "produto_plano_de_contas"
 obj2 = "contas a pagar"
 obj1 = "contas a receber"
+obj4 = "movimentacao_financeira"
+obj5 = "Centro_de_custos"
+obj6 = "SubPlanodecontas"
+obj7 = "produto_centro_de_custo"
 
 url_base = os.getenv('DB_UR')
 cont_pg = 0
 url_tg = f"{url_base}/{obj3}?cursor={cont_pg}" 
 url_tg_contas_a_pagar = f"{url_base}/{obj2}?cursor={cont_pg}" 
 url_tg_contas_a_receber = f"{url_base}/{obj1}?cursor={cont_pg}"
-
+url_movimentacao_financeira = f"{url_base}/{obj4}?cursor={cont_pg}"
+url_Centro_de_custos = f"{url_base}/{obj5}?cursor={cont_pg}"
+url_SubPlanodecontas = f"{url_base}/{obj6}?cursor={cont_pg}"
+url_produto_centro_de_custo = f"{url_base}/{obj7}?cursor={cont_pg}"
 
 logging.basicConfig(level=logging.INFO, filename="RelatorioLogs.log", format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -340,6 +347,310 @@ def insert_into_databaseFULL_obj1(data):# Full dados obj1 contas a receber
             pedido_de_vendas_custom_pedido_de_venda_value, plano_de_contas2_custom_subreceita_value, valor_inicial_number_value,ativo_boolean_value,id_cash_text_value,
             agrupado_boolean_value,parcela_name_text_value,mes_number_value,ano_number_value,
             produto_plano_de_contas_list_custom_produto_plano_de_contas_value,empresa_custom_empresa_value,migrado_boolean_value, _id_value
+        )
+
+        cursor.execute(query, values)
+        conn.commit()
+ 
+    conn.close()
+
+def inser_into_database_obj4(data):
+    server = os.getenv('SERVER')
+    database = os.getenv('DB_AZ')
+    username = os.getenv('NAME')
+    password = os.getenv('PASSWORD')
+    driver = 'ODBC Driver 17 for SQL Server'
+    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+    cursor = conn.cursor()
+
+    query = """
+        INSERT INTO MOVIMENTACAO_FINANCEIRA (
+            [Modified Date], [Created Date], [Created By], apagado_boolean, banco_custom_bancos, cliente_custom_cliente1,
+            conciliado_boolean, contas_a_receber_custom_contas_a_receber, data_date, id_empresa_text,
+            tipo_option_tipo_de_conta, valor_number, descricao_text, plano_de_contas_custom_subreceita,
+            acrescimo_number, decrescimo_number, mes_number, ano_number, empresa_custom_empresa, migrado_boolean, _id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+
+    for item in data:
+        # Inicialização das variáveis
+        Modified_Date_value = ''
+        Created_Date_value = ''
+        Created_By_value = ''
+        apagado_boolean_value = ''
+        banco_custom_bancos_value = ''
+        cliente_custom_cliente1_value =''
+        conciliado_boolean_value = ''
+        contas_a_receber_custom_contas_a_receber_value = ''
+        data_date_value = ''
+        id_empresa_text_value = ''
+        tipo_option_tipo_de_conta_value = ''
+        valor_number_value = ''
+        descricao_text_value = ''
+        plano_de_contas_custom_subreceita_value = ''
+        acrescimo_number_value = 0
+        decrescimo_number_value = 0
+        mes_number_value = ''
+        ano_number_value = ''
+        empresa_custom_empresa_value = ''
+        migrado_boolean_value = ''
+        _id_value = ''
+        formatted_created_date = None
+        formatted_data_date = None
+        formatted_modified_date = None
+        
+        try:
+            Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
+            Created_Date_value = item['Created Date'].replace('Created Date', '')
+            Created_By_value = item['Created By'].replace('Created By', '')
+            apagado_boolean_value =item['apagado_boolean'].replace('apagado_boolean', '')
+            banco_custom_bancos_value = item['banco_custom_bancos'].replace('banco_custom_bancos', '')
+            cliente_custom_cliente1_value =item['cliente_custom_cliente1'].replace('cliente_custom_cliente1', '')
+            conciliado_boolean_value = item['conciliado_boolean'].replace('conciliado_boolean', '')
+            contas_a_receber_custom_contas_a_receber_value = item['contas_a_receber_custom_contas_a_receber'].replace('contas_a_receber_custom_contas_a_receber', '')
+            data_date_value = item['data_date'].replace('data_date', '')
+            id_empresa_text_value = item['id_empresa_text'].replace('id_empresa_text', '')
+            tipo_option_tipo_de_conta_value = item['tipo_option_tipo_de_conta'].replace('tipo_option_tipo_de_conta', '')
+            valor_number_value = float(item['valor_number']) if item['valor_number'] else None
+            descricao_text_value = item['descricao_text'].replace('descricao_text', '')
+            plano_de_contas_custom_subreceita_value = item['plano_de_contas_custom_subreceita'].replace('plano_de_contas_custom_subreceita', '')
+            acrescimo_number_value = item['acrescimo_number'] 
+            decrescimo_number_value = item['decrescimo_number']
+            mes_number_value = int(item['mes_number'])
+            ano_number_value = int(item['ano_number'])
+            empresa_custom_empresa_value = item['empresa_custom_empresa'].replace('empresa_custom_empresa', '')
+            migrado_boolean_value = item['migrado_boolean'].replace('migrado_boolean', '')
+            _id_value = item['_id'].replace('_id', '')
+
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
+            data_date_obj = parse_custom_datetime(data_date_value)
+
+            if created_date_obj is not None:
+                formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_created_date = None
+
+            if modified_date_obj is not None:
+                formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_modified_date = None
+                
+            if data_date_obj is not None:
+                formatted_data_date = data_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_data_date = None
+                
+            if acrescimo_number_value is not None:
+                acrescimo_number_value = float(acrescimo_number_value)
+            if decrescimo_number_value is not None:
+                decrescimo_number_value = float(decrescimo_number_value)
+
+        except KeyError as e:
+            print(f"Erro ao inserir dados: {e}")
+            print(f"Dados problemáticos: {item}")
+            pass
+
+        values = (
+            formatted_modified_date, formatted_created_date, Created_By_value,apagado_boolean_value, banco_custom_bancos_value,cliente_custom_cliente1_value,
+            conciliado_boolean_value,contas_a_receber_custom_contas_a_receber_value, formatted_data_date,id_empresa_text_value,tipo_option_tipo_de_conta_value,valor_number_value,
+            descricao_text_value,plano_de_contas_custom_subreceita_value,acrescimo_number_value,decrescimo_number_value,
+            mes_number_value,ano_number_value,empresa_custom_empresa_value,migrado_boolean_value, _id_value
+        )
+
+        cursor.execute(query, values)
+        conn.commit()
+ 
+    conn.close()
+
+def inser_into_database_obj5(data):
+    server = os.getenv('SERVER')
+    database = os.getenv('DB_AZ')
+    username = os.getenv('NAME')
+    password = os.getenv('PASSWORD')
+    driver = 'ODBC Driver 17 for SQL Server'
+    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO CENTRO_DE_CUSTOS(
+        [Created By],[Created Date],id_empresa_custom_empresa,id_empresa_text,
+        [Modified Date], nome_text, _id
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    """
+
+    for item in data:
+        # Inicialização das variáveis
+        Created_By_value = ''
+        Created_Date_value = None
+        id_empresa_custom_empresa_value = ''
+        id_empresa_text_value = ''
+        Modified_Date_value = None
+        nome_text_value = ''
+        _id_value = ''
+        try:
+            Created_By_value = item['Created By'].replace('Created By', '')
+            Created_Date_value = item['Created Date'].replace('Created Date', '')
+            id_empresa_custom_empresa_value = item['id_empresa_custom_empresa'].replace('id_empresa_custom_empresa', '')
+            id_empresa_text_value = item['id_empresa_text'].replace('id_empresa_text', '')
+            Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
+            nome_text_value = item['nome_text'].replace('nome_text', '')
+            _id_value = item['_id'].replace('id', '')
+            print(f"Valor de id_empresa_text: {id_empresa_text_value}")
+            print(f"ID: : {_id_value}")
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
+
+            if created_date_obj is not None:
+                formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_created_date = None
+
+            if modified_date_obj is not None:
+                formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_modified_date = None
+
+        except KeyError:
+            pass
+
+        values = (
+            Created_By_value,formatted_created_date, id_empresa_custom_empresa_value,id_empresa_text_value,formatted_modified_date,nome_text_value, _id_value
+        )
+
+        cursor.execute(query, values)
+        conn.commit()
+        print(f"Inserido no BANCO DE DADOS{_id_value}")
+    print("FINAlIZADO")    
+    conn.close()
+    
+def inser_into_database_obj6(data):
+    server = os.getenv('SERVER')
+    database = os.getenv('DB_AZ')
+    username = os.getenv('NAME')
+    password = os.getenv('PASSWORD')
+    driver = 'ODBC Driver 17 for SQL Server'
+    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+    cursor = conn.cursor()
+
+    query = """
+        INSERT INTO SUBPLANODECONTAS (
+            [Modified Date], [Created Date], [Created By], id_empresa_text, subreceita_text,apagado_boolean,tiposub_option_tiposubreceita,
+            subplanodecontas_text, empresa_custom_empresa, _id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+
+    for item in data:
+        # Inicialização das variáveis
+        Modified_Date_value = None
+        Created_Date_value = None
+        Created_By_value = None
+        id_empresa_text_value = ''
+        subreceita_text_value = ''
+        apagado_boolean_value = ''
+        tiposub_option_tiposubreceita_value = ''
+        subplanodecontas_text_value = ''
+        empresa_custom_empresa_value = ''
+        _id_value = ''
+        
+        try:
+            Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
+            Created_Date_value = item['Created Date'].replace('Created Date', '')
+            Created_By_value = item['Created By'].replace('Created By', '')
+            id_empresa_text_value = item['id_empresa_text'].replace('id_empresa_text', '')
+            subreceita_text_value = item['subreceita_text'].replace('subreceita_text', '')
+            apagado_boolean_value = item['apagado_boolean'].replace('apagado_boolean', '')
+            tiposub_option_tiposubreceita_value = item['tiposub_option_tiposubreceita'].replace('tiposub_option_tiposubreceita', '')
+            subplanodecontas_text_value = item['subplanodecontas_text'].replace('subplanodecontas_text', '')
+            empresa_custom_empresa_value = item['empresa_custom_empresa'].replace('empresa_custom_empresa', '')
+            _id_value = item['_id'].replace('id', '')
+
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
+
+            if created_date_obj is not None:
+                formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_created_date = None
+
+            if modified_date_obj is not None:
+                formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_modified_date = None
+
+        except KeyError:
+            pass
+
+        values = (
+            formatted_modified_date, formatted_created_date, Created_By_value,id_empresa_text_value,subreceita_text_value,
+            apagado_boolean_value,tiposub_option_tiposubreceita_value,subplanodecontas_text_value,empresa_custom_empresa_value, _id_value
+        )
+
+        cursor.execute(query, values)
+        conn.commit()
+ 
+    conn.close()
+   
+def inser_into_database_obj7(data):
+    server = os.getenv('SERVER')
+    database = os.getenv('DB_AZ')
+    username = os.getenv('NAME')
+    password = os.getenv('PASSWORD')
+    driver = 'ODBC Driver 17 for SQL Server'
+    conn = pyodbc.connect(f'Driver={driver};Server={server};Database={database};UID={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+    cursor = conn.cursor()
+
+    query = """
+        INSERT INTO PRODUTO_CENTRO_DE_CUSTO (
+            ativo_boolean,[Created By], [Created Date], [Modified Date],  
+            plano_de_custo_custom_plano_de_custo,porcentagem_number, _id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """
+
+    for item in data:
+        # Inicialização das variáveis
+        ativo_boolean_value = ''
+        Created_By_value = ''
+        Created_Date_value = None
+        Modified_Date_value = None
+        plano_de_custo_custom_plano_de_custo_value = ''
+        porcentagem_number_value = 1
+        _id_value = ''
+        
+        try:
+            ativo_boolean_value = item['ativo_boolean'].replace('ativo_boolean', '')
+            Created_By_value = item['Created By'].replace('Created By', '')
+            Created_Date_value = item['Created Date'].replace('Created Date', '')
+            Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
+            plano_de_custo_custom_plano_de_custo_value = item['plano_de_custo_custom_plano_de_custo'].replace('plano_de_custo_custom_plano_de_custo', '')
+            porcentagem_number_value = item['porcentagem_number']
+            _id_value = item['_id'].replace('id', '')
+            
+            created_date_obj = parse_custom_datetime(Created_Date_value)
+            modified_date_obj = parse_custom_datetime(Modified_Date_value)
+
+            if created_date_obj is not None:
+                formatted_created_date = created_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_created_date = None
+
+            if modified_date_obj is not None:
+                formatted_modified_date = modified_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                formatted_modified_date = None
+                
+        except KeyError as e:
+            print(f"Erro ao inserir dados: {e}")
+            print(f"Dados problemáticos: {item}")
+            pass
+
+        values = (
+            ativo_boolean_value,Created_By_value, formatted_created_date, formatted_modified_date,
+            plano_de_custo_custom_plano_de_custo_value,porcentagem_number_value,_id_value
         )
 
         cursor.execute(query, values)
@@ -772,7 +1083,11 @@ def main(mytimer: func.TimerRequest) -> None:
 
 response = requests.get(url_tg)
 response = requests.get(url_tg_contas_a_pagar)
-response = requests.get(url_tg_contas_a_receber)    
+response = requests.get(url_tg_contas_a_receber)   
+response = requests.get(url_movimentacao_financeira)  
+response = requests.get(url_Centro_de_custos)  
+response = requests.get(url_SubPlanodecontas)  
+response = requests.get(url_produto_centro_de_custo)   
 response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 
 
@@ -789,9 +1104,13 @@ response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 #Chamada da pasta API_IN.py (COMPARA AS ULTIMAS 5 PAGINAS = 500 ITENS DA API DO BUBBLE)
 
 #dados = produto_plano_de_contas_5pg(url_tg)
-dados_contas_a_pagar = ContasPagar_5pg(url_tg_contas_a_pagar)
-dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
+#dados_contas_a_pagar = ContasPagar_5pg(url_tg_contas_a_pagar)
+#dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
 
+#dados_4=Movimentacao_financeira(url_movimentacao_financeira)
+#dados_5=Centro_de_custos(url_Centro_de_custos)
+#dados_6=SubPlanodecontas(url_SubPlanodecontas)
+dados_7=produto_centro_de_custo(url_produto_centro_de_custo)
 
 #SALVA TODOS OS DADOS DO BANCO DE DADOS (BACKUP COMPLETO) 
 
@@ -799,9 +1118,14 @@ dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
 #insert_into_databaseFULL_obj2(dados_contas_a_pagar)
 #insert_into_databaseFULL_obj1(dados_contas_a_receber)
 
+#inser_into_database_obj5(dados_5)
+#inser_into_database_obj6(dados_6)
+inser_into_database_obj7(dados_7)
+#inser_into_database_obj4(dados_4)
+
 #att_bd_azure_bj3(dados)
-att_bd_azure_bj2(dados_contas_a_pagar)
-att_bd_azure_bj1(dados_contas_a_receber)
+#att_bd_azure_bj2(dados_contas_a_pagar)
+#att_bd_azure_bj1(dados_contas_a_receber)
 
 #produto_plano_de_contas(url_tg)
 
