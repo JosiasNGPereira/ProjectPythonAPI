@@ -25,6 +25,8 @@ url_Centro_de_custos = f"{url_base}/{obj5}?cursor={cont_pg}"
 url_SubPlanodecontas = f"{url_base}/{obj6}?cursor={cont_pg}"
 url_produto_centro_de_custo = f"{url_base}/{obj7}?cursor={cont_pg}"
 
+
+#_____BACKUP BANCO DE DADOS_____#
 def produto_plano_de_contas(url_tg): # Percorre toda a API do Bubble (todas as paginas)
     cont_pg = 0
     estruturas = []
@@ -243,6 +245,8 @@ def produto_centro_de_custo(utl_tg):
     print("PRODUTO CENTRO DE CUSTO FINALIZADO")    
     return estruturas
 
+
+#_____VERIFICAÇÕES API_____#
 def verificar_API_and_save(dados, filename): # Salva a busca da API em um .TXT para verificação
     with open(filename, 'w', encoding='utf-8') as file:
         if dados is not None:
@@ -265,6 +269,8 @@ def verificar_API(dados): # imprime na tela a busca da API (Mostra apenas +- 700
     else:
         print("Falha ao acessar a API.")
    
+
+#_____ATUALIZAÇÃO DO BANCO DE DADOS_____#   
 def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API Bubble = 500 itens
     estruturas = []
     num_pg=5
@@ -311,7 +317,7 @@ def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API B
 
     return estruturas
 
-def ContasPagar_5pg(url): # Pecorre apenas a primeira pagina da API Bubble = 500 itens
+def ContasPagar_5pg(url): 
     estruturas = []
     cursor = None
     cont =0
@@ -374,7 +380,7 @@ def ContasPagar_5pg(url): # Pecorre apenas a primeira pagina da API Bubble = 500
 
     return estruturas 
 
-def ContasReceber_5pg(url): # Pecorre apenas a primeira pagina da API Bubble = 500 itens
+def ContasReceber_5pg(url): 
     estruturas = []
     cursor = None
     cont =0
@@ -440,6 +446,150 @@ def ContasReceber_5pg(url): # Pecorre apenas a primeira pagina da API Bubble = 5
 
     return estruturas 
 
+def movimentacao_financeira_5pg(url):
+    estruturas = []
+    cursor = None
+    cont =0
+
+    response = requests.get(url)
+    response.encoding = 'utf-8'
+    data = response.json()
+    cursor = data.get("response", {}).get("remaining")
+    cursor+=100
+    print(cursor)
+    while True > 0:
+        response = requests.get(url)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = create_estruturaMovimentacao_financeira(item)
+                    estruturas.append(estrutura)   
+                cursor -=100
+                url = f"{url_base}/{obj4}?cursor={cursor}"
+                if cont == 5:
+                    break
+                cont +=1
+            else:
+                break
+        
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+    print("MOVIMENTAÇÃO DINANCEIRA FINALIZADO")     
+    return estruturas
+    
+def centro_de_custos_5pg(url):
+    estruturas = []
+    cursor = None
+    cont =0
+
+    response = requests.get(url)
+    response.encoding = 'utf-8'
+    data = response.json()
+    cursor = data.get("response", {}).get("remaining")
+    cursor+=100
+    print(cursor)
+    while True:
+        response = requests.get(url)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = create_estruturaCentro_de_custos(item)
+                    estruturas.append(estrutura)   
+                cursor -=100
+                url = f"{url_base}/{obj5}?cursor={cursor}"
+                if cont == 5:
+                    break
+                cont +=1
+            else:
+                break
+        
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+    print("CENTRO CUSTO FINALIZADO")      
+    return estruturas  
+    
+def sub_planodecontas_5pg(url):
+    estruturas = []
+    cursor = None
+    cont =0
+
+    response = requests.get(url)
+    response.encoding = 'utf-8'
+    data = response.json()
+    cursor = data.get("response", {}).get("remaining")
+    cursor+=100
+    print(cursor)
+    while True:
+        response = requests.get(url)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = create_estruturaSubPlanodecontas(item)
+                    estruturas.append(estrutura)   
+                cursor -=100
+                url = f"{url_base}/{obj6}?cursor={cursor}"
+                if cont == 5:
+                    break
+                
+                cont +=1
+            else:
+                break
+        
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+    print("SUB PLANO DE CONTAS FINALIZADO")  
+    return estruturas
+    
+def produto_centro_de_custos_5pg(url):
+    estruturas = []
+    cursor = None
+    cont =0
+
+    response = requests.get(url)
+    response.encoding = 'utf-8'
+    data = response.json()
+    cursor = data.get("response", {}).get("remaining")
+    cursor+=100
+    print(cursor)
+    while True:
+        response = requests.get(url)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = create_estrutura_produto_centro_de_custo(item)
+                    estruturas.append(estrutura)   
+                cursor -=100
+                url = f"{url_base}/{obj7}?cursor={cursor}"
+                if cont == 5:
+                    break
+                
+                cont +=1
+            else:
+                break
+        
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+    print("PRODUTO CENTRO DE CUSTO FINALIZADO")    
+    return estruturas
+
+
+#_____CRIAÇÃO DAS ESTRUTURAS_____#
 def create_estruturaReceber(item):
     
     estrutura = {
@@ -572,6 +722,7 @@ def create_estrutura_produto_centro_de_custo(item):
         "_id": str(item.get("_id", ""))
     }
     return estrutura
+
 ####*******____TESTE_____*********####
 
 #ContasReceber(url_receber)          
