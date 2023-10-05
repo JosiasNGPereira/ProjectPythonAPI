@@ -1,4 +1,3 @@
-#from flask import Flask, jsonify, request
 import time
 from dotenv import load_dotenv
 import requests
@@ -273,48 +272,34 @@ def verificar_API(dados): # imprime na tela a busca da API (Mostra apenas +- 700
 #_____ATUALIZAÇÃO DO BANCO DE DADOS_____#   
 def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API Bubble = 500 itens
     estruturas = []
-    num_pg=5
-    cont_paginas = 0
-    cursor = None
-
-    for _ in range(num_pg):
-        if cursor:
-            url = f"{url}&cursor={cont_paginas}"
-
+    cursor = 0
+    cont =0
+    
+    url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=false"
+    
+    print(cursor)
+    while True:
         response = requests.get(url)
-        response.encoding = 'utf-8'
-
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
         try:
             data = response.json()
             if "response" in data and "results" in data["response"]:
                 results = data["response"]["results"]
                 for item in results:
-                    estrutura = {
-                        "Modified Date": str(item.get("Modified Date", "")),
-                        "Created Date": str(item.get("Created Date", "")),
-                        "Created By": str(item.get("Created By", "")),
-                        "id_empresa_text": str(item.get("id_empresa_text", "")),
-                        "ativo_boolean": str(item.get("ativo_boolean", "")),
-                        "porcentagem_number": str(item.get("porcentagem_number", "")),
-                        "plano_de_contas_custom_subreceita": str(item.get("plano_de_contas_custom_subreceita", "")),
-                        "tipo_plano_de_contas_option_tiposubreceita": str(item.get("tipo_plano_de_contas_option_tiposubreceita", "")),
-                        "unificador_text": str(item.get("unificador_text", "")),
-                        "visivel_boolean": str(item.get("visivel_boolean", "")),
-                        "id_empresa_custom_empresa": str(item.get("id_empresa_custom_empresa", "")),
-                        "id_produto_centro_decustos": str(item.get("id_produto_centro_decustos", "")),
-                        "planos_de_custos_list_custom_produto_plano_de_custo": str(item.get("planos_de_custos_list_custom_produto_plano_de_custo", "")),
-                        "_id": str(item.get("_id", ""))
-                    }
+                    estrutura=create_estruturaProduto_contas(item)
                     estruturas.append(estrutura)
-
-                cursor = data.get("response", {}).get("cursor")
-                cont_paginas+=100 
+                cursor +=100
+                url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=false"
+                if cont == 5:
+                    break
+                cont +=1
             else:
                 break
+        
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
-
+    print("PRODUTO PLANO DE CONTAS FINALIZADO")     
     return estruturas
 
 def ContasPagar_5pg(url): 
@@ -590,6 +575,26 @@ def produto_centro_de_custos_5pg(url):
 
 
 #_____CRIAÇÃO DAS ESTRUTURAS_____#
+def create_estruturaProduto_contas(item):
+    estrutura = {
+        "Modified Date": str(item.get("Modified Date", "")),
+        "Created Date": str(item.get("Created Date", "")),
+        "Created By": str(item.get("Created By", "")),
+        "id_empresa_text": str(item.get("id_empresa_text", "")),
+        "ativo_boolean": str(item.get("ativo_boolean", "")),
+        "porcentagem_number": str(item.get("porcentagem_number", "")),
+        "plano_de_contas_custom_subreceita": str(item.get("plano_de_contas_custom_subreceita", "")),
+        "tipo_plano_de_contas_option_tiposubreceita": str(item.get("tipo_plano_de_contas_option_tiposubreceita", "")),
+        "unificador_text": str(item.get("unificador_text", "")),
+        "visivel_boolean": str(item.get("visivel_boolean", "")),
+        "id_empresa_custom_empresa": str(item.get("id_empresa_custom_empresa", "")),
+        "id_produto_centro_decustos": str(item.get("id_produto_centro_decustos", "")),
+        "planos_de_custos_list_custom_produto_plano_de_custo": str(item.get("planos_de_custos_list_custom_produto_plano_de_custo", "")),
+        "_id": str(item.get("_id", ""))
+    }
+    
+    return estrutura
+    
 def create_estruturaReceber(item):
     
     estrutura = {
