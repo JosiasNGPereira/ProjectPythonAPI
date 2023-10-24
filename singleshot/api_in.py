@@ -277,7 +277,7 @@ def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API B
     
     url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=false"
     
-    print(cursor)
+    #print(cursor)
     while True:
         response = requests.get(url)
         response.encoding = 'utf-8'  # Definir a codificação como UTF-8
@@ -290,7 +290,7 @@ def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API B
                     estruturas.append(estrutura)
                 cursor +=100
                 url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=false"
-                if cont == 5:
+                if cont == 40:
                     break
                 cont +=1
             else:
@@ -299,7 +299,7 @@ def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API B
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
-    print("PRODUTO PLANO DE CONTAS FINALIZADO")     
+    #print("PRODUTO PLANO DE CONTAS FINALIZADO")     
     return estruturas
 
 def ContasPagar_5pg(url): 
@@ -312,11 +312,11 @@ def ContasPagar_5pg(url):
     data = response.json()
     cursor = data.get("response", {}).get("remaining")
     cursor+=100
-    print(cursor)
+    #print(cursor)
     while True:
         response = requests.get(url)
         response.encoding = 'utf-8'
-        print(cursor)
+        #print(cursor)
         try:
             data = response.json()
             if "response" in data and "results" in data["response"]:
@@ -375,11 +375,11 @@ def ContasReceber_5pg(url):
     data = response.json()
     cursor = data.get("response", {}).get("remaining")
     cursor+=100
-    print(cursor)
+    #print(cursor)
     while True:
         response = requests.get(url)
         response.encoding = 'utf-8'
-        print(cursor)
+        #print(cursor)
         try:
             data = response.json()
             if "response" in data and "results" in data["response"]:
@@ -441,7 +441,7 @@ def movimentacao_financeira_5pg(url):
     data = response.json()
     cursor = data.get("response", {}).get("remaining")
     cursor+=100
-    print(cursor)
+    #print(cursor)
     while True > 0:
         response = requests.get(url)
         response.encoding = 'utf-8'  # Definir a codificação como UTF-8
@@ -463,7 +463,7 @@ def movimentacao_financeira_5pg(url):
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
-    print("MOVIMENTAÇÃO DINANCEIRA FINALIZADO")     
+    #print("MOVIMENTAÇÃO DINANCEIRA FINALIZADO")     
     return estruturas
     
 def centro_de_custos_5pg(url):
@@ -476,7 +476,7 @@ def centro_de_custos_5pg(url):
     data = response.json()
     cursor = data.get("response", {}).get("remaining")
     cursor+=100
-    print(cursor)
+    #print(cursor)
     while True:
         response = requests.get(url)
         response.encoding = 'utf-8'  # Definir a codificação como UTF-8
@@ -498,7 +498,7 @@ def centro_de_custos_5pg(url):
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
-    print("CENTRO CUSTO FINALIZADO")      
+    #print("CENTRO CUSTO FINALIZADO")      
     return estruturas  
     
 def sub_planodecontas_5pg(url):
@@ -511,7 +511,7 @@ def sub_planodecontas_5pg(url):
     data = response.json()
     cursor = data.get("response", {}).get("remaining")
     cursor+=100
-    print(cursor)
+    #print(cursor)
     while True:
         response = requests.get(url)
         response.encoding = 'utf-8'  # Definir a codificação como UTF-8
@@ -534,7 +534,7 @@ def sub_planodecontas_5pg(url):
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
-    print("SUB PLANO DE CONTAS FINALIZADO")  
+    #print("SUB PLANO DE CONTAS FINALIZADO")  
     return estruturas
     
 def produto_centro_de_custos_5pg(url):
@@ -547,7 +547,7 @@ def produto_centro_de_custos_5pg(url):
     data = response.json()
     cursor = data.get("response", {}).get("remaining")
     cursor+=100
-    print(cursor)
+    #print(cursor)
     while True:
         response = requests.get(url)
         response.encoding = 'utf-8'  # Definir a codificação como UTF-8
@@ -570,7 +570,7 @@ def produto_centro_de_custos_5pg(url):
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
-    print("PRODUTO CENTRO DE CUSTO FINALIZADO")    
+    #print("PRODUTO CENTRO DE CUSTO FINALIZADO")    
     return estruturas
 
 
@@ -674,6 +674,7 @@ def create_estruturaMovimentacao_financeira(item):
         "conciliado_boolean": str(item.get("conciliado_boolean", "")),
         "contas_a_receber_custom_contas_a_receber": str(item.get("contas_a_receber_custom_contas_a_receber", "")),
         "data_date": str(item.get("data_date", "")),
+        "fornecedor_custom_fornecedor": str(item.get("fornecedor_custom_fornecedor", "")),
         "id_empresa_text": str(item.get("id_empresa_text", "")),
         "tipo_option_tipo_de_conta": str(item.get("tipo_option_tipo_de_conta", "")),
         "valor_number": item.get("valor_number", 0),
@@ -683,6 +684,7 @@ def create_estruturaMovimentacao_financeira(item):
         "decrescimo_number": item.get("decrescimo_number", 0),
         "mes_number": item.get("mes_number", 0),
         "ano_number": item.get("ano_number", 0),
+        "produto_plano_de_contas_list_custom_produto_plano_de_contas": str(item.get("produto_plano_de_contas_list_custom_produto_plano_de_contas", "")),
         "empresa_custom_empresa": str(item.get("empresa_custom_empresa", "")),
         "migrado_boolean": str(item.get("migrado_boolean", "")),
         "_id": str(item.get("_id", ""))
@@ -758,9 +760,9 @@ def create_estrutura_produto_centro_de_custo(item):
 #print(f"TOTAL DE ITENS PRODUTO CENTRO DE CUSTO: {len(fulldados7)}")
 
 #verificar_API(dados2)
-#filename = 'MOVIMENTACAO_FINANCEIRA.txt'
-#verificar_API_and_save(fulldados4, filename)
-#print(len(fulldados1))
+#filename = 'PLANO_DE_CUSTO_CUSTOM.txt'
+#verificar_API_and_save(fulldados7, filename)
+#print(len(fulldados7))
 
 
 

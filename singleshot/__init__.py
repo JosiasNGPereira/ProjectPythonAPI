@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import logging
-from api_in import ContasPagar_5pg, ContasReceber_5pg,movimentacao_financeira_5pg,centro_de_custos_5pg, sub_planodecontas_5pg,produto_centro_de_custos_5pg,produto_plano_de_contas_5pg
+from .api_in import ContasPagar_5pg, ContasReceber_5pg,movimentacao_financeira_5pg,centro_de_custos_5pg, sub_planodecontas_5pg,produto_centro_de_custos_5pg,produto_plano_de_contas_5pg
 import os
 import requests
 import pyodbc
@@ -93,18 +93,18 @@ def overflowdata_produto_contas(url_tg):
                 remaining = data.get("response", {}).get("remaining", 0)
                 
                 if remaining == 0:
-                    print(estrutura)
+                    #print(estrutura)
                     insert_into_databaseFULL_obj3(estruturas)
-                    print("Script finalizado PRODUTO PLANO DE CONTAS")
+                    #print("Script finalizado PRODUTO PLANO DE CONTAS")
                     break
                 if len(estruturas)==5000:
                     insert_into_databaseFULL_obj3(estruturas)
                     estruturas.clear()
-                    print("Inseriu no banco de dados")
+                    #print("Inseriu no banco de dados")
                 
                 cont_pg += 100
-                print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
-                print(len(estruturas))
+                #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+                #print(len(estruturas))
                 url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
@@ -421,11 +421,11 @@ def inser_into_database_obj4(data):
     query = """
         INSERT INTO MOVIMENTACAO_FINANCEIRA (
             [Modified Date], [Created Date], [Created By], apagado_boolean, banco_custom_bancos, cliente_custom_cliente1,
-            conciliado_boolean, contas_a_receber_custom_contas_a_receber, data_date, id_empresa_text,
+            conciliado_boolean, contas_a_receber_custom_contas_a_receber, data_date, fornecedor_custom_fornecedor, id_empresa_text,
             tipo_option_tipo_de_conta, valor_number, descricao_text, plano_de_contas_custom_subreceita,
-            acrescimo_number, decrescimo_number, mes_number, ano_number, empresa_custom_empresa, migrado_boolean, _id
+            acrescimo_number, decrescimo_number, mes_number, ano_number, produto_plano_de_contas_list_custom_produto_plano_de_contas, empresa_custom_empresa, migrado_boolean, _id
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     for item in data:
@@ -439,6 +439,7 @@ def inser_into_database_obj4(data):
         conciliado_boolean_value = ''
         contas_a_receber_custom_contas_a_receber_value = ''
         data_date_value = ''
+        fornecedor_custom_fornecedor_value = ''
         id_empresa_text_value = ''
         tipo_option_tipo_de_conta_value = ''
         valor_number_value = ''
@@ -448,6 +449,7 @@ def inser_into_database_obj4(data):
         decrescimo_number_value = 0
         mes_number_value = ''
         ano_number_value = ''
+        produto_plano_de_contas_list_custom_produto_plano_de_contas_value = ''
         empresa_custom_empresa_value = ''
         migrado_boolean_value = ''
         _id_value = ''
@@ -465,6 +467,7 @@ def inser_into_database_obj4(data):
             conciliado_boolean_value = item['conciliado_boolean'].replace('conciliado_boolean', '')
             contas_a_receber_custom_contas_a_receber_value = item['contas_a_receber_custom_contas_a_receber'].replace('contas_a_receber_custom_contas_a_receber', '')
             data_date_value = item['data_date'].replace('data_date', '')
+            fornecedor_custom_fornecedor_value = item['fornecedor_custom_fornecedor'].replace('fornecedor_custom_fornecedor', '')
             id_empresa_text_value = item['id_empresa_text'].replace('id_empresa_text', '')
             tipo_option_tipo_de_conta_value = item['tipo_option_tipo_de_conta'].replace('tipo_option_tipo_de_conta', '')
             valor_number_value = float(item['valor_number']) if item['valor_number'] else None
@@ -474,6 +477,7 @@ def inser_into_database_obj4(data):
             decrescimo_number_value = item['decrescimo_number']
             mes_number_value = int(item['mes_number'])
             ano_number_value = int(item['ano_number'])
+            produto_plano_de_contas_list_custom_produto_plano_de_contas_value = item['produto_plano_de_contas_list_custom_produto_plano_de_contas'].replace('produto_plano_de_contas_list_custom_produto_plano_de_contas', '')
             empresa_custom_empresa_value = item['empresa_custom_empresa'].replace('empresa_custom_empresa', '')
             migrado_boolean_value = item['migrado_boolean'].replace('migrado_boolean', '')
             _id_value = item['_id'].replace('_id', '')
@@ -509,9 +513,9 @@ def inser_into_database_obj4(data):
 
         values = (
             formatted_modified_date, formatted_created_date, Created_By_value,apagado_boolean_value, banco_custom_bancos_value,cliente_custom_cliente1_value,
-            conciliado_boolean_value,contas_a_receber_custom_contas_a_receber_value, formatted_data_date,id_empresa_text_value,tipo_option_tipo_de_conta_value,valor_number_value,
+            conciliado_boolean_value,contas_a_receber_custom_contas_a_receber_value, formatted_data_date,fornecedor_custom_fornecedor_value,id_empresa_text_value,tipo_option_tipo_de_conta_value,valor_number_value,
             descricao_text_value,plano_de_contas_custom_subreceita_value,acrescimo_number_value,decrescimo_number_value,
-            mes_number_value,ano_number_value,empresa_custom_empresa_value,migrado_boolean_value, _id_value
+            mes_number_value,ano_number_value,produto_plano_de_contas_list_custom_produto_plano_de_contas_value,empresa_custom_empresa_value,migrado_boolean_value, _id_value
         )
 
         cursor.execute(query, values)
@@ -553,8 +557,8 @@ def inser_into_database_obj5(data):
             Modified_Date_value = item['Modified Date'].replace('Modified Date', '')
             nome_text_value = item['nome_text'].replace('nome_text', '')
             _id_value = item['_id'].replace('id', '')
-            print(f"Valor de id_empresa_text: {id_empresa_text_value}")
-            print(f"ID: : {_id_value}")
+            #print(f"Valor de id_empresa_text: {id_empresa_text_value}")
+            #print(f"ID: : {_id_value}")
             created_date_obj = parse_custom_datetime(Created_Date_value)
             modified_date_obj = parse_custom_datetime(Modified_Date_value)
 
@@ -577,8 +581,8 @@ def inser_into_database_obj5(data):
 
         cursor.execute(query, values)
         conn.commit()
-        print(f"Inserido no BANCO DE DADOS{_id_value}")
-    print("FINAlIZADO")    
+        #print(f"Inserido no BANCO DE DADOS{_id_value}")
+    #print("FINAlIZADO")    
     conn.close()
     
 def inser_into_database_obj6(data):
@@ -784,7 +788,7 @@ def att_bd_azure_obj2(data):# Att o banco de dados Azure ou adicionar os novos c
             Created_By_value = item['Created By']
             Created_Date_value = item['Created Date']
             Modified_Date_value = item['Modified Date']
-            print(f"_id: {_id_value}")
+            #print(f"_id: {_id_value}")
 
             created_date_obj = parse_custom_datetime(Created_Date_value)
             modified_date_obj = parse_custom_datetime(Modified_Date_value)
@@ -794,7 +798,7 @@ def att_bd_azure_obj2(data):# Att o banco de dados Azure ou adicionar os novos c
             
             cursor.execute("SELECT COUNT(*) FROM CONTAS_A_PAGAR WHERE _id=?", (_id_value,))
             row_count = cursor.fetchone()[0]
-            print(f"Row count para {_id_value}: {row_count}")
+            #print(f"Row count para {_id_value}: {row_count}")
             values = (formatted_modified_date, formatted_created_date, Created_By_value, compet_ncia_date_value,
                   id_empresa_text_value, pago_boolean_value, repeti__es_number_value, valor_number_value,
                   vencimento_date_value, forma_de_pagamento_text_value, apagado_boolean_value, entrada_boolean_value,
@@ -805,7 +809,7 @@ def att_bd_azure_obj2(data):# Att o banco de dados Azure ou adicionar os novos c
                   migrado_boolean_value, _id_value
             )
             if row_count > 0:
-                print('ATUALIZADO no banco de dados')
+                #print('ATUALIZADO no banco de dados')
                 cursor.execute("""
                     UPDATE CONTAS_A_PAGAR SET
                     [Modified Date] = ?, [Created Date] = ?, [Created By] = ?,
@@ -821,7 +825,7 @@ def att_bd_azure_obj2(data):# Att o banco de dados Azure ou adicionar os novos c
                     WHERE _id = ?
                 """, values)
             else:
-                print('INSERIDO no banco de dados')
+                #print('INSERIDO no banco de dados')
                 cursor.execute("""
                     INSERT INTO CONTAS_A_PAGAR (
                         [Modified Date], [Created Date], [Created By], compet_ncia_date, 
@@ -926,7 +930,7 @@ def att_bd_azure_obj1(data): # Att o banco de dados Azure ou adicionar os novos 
             
             cursor.execute("SELECT COUNT(*) FROM CONTAS_A_RECEBER WHERE _id=?", (_id_value,))
             row_count = cursor.fetchone()[0]
-            print(f"Row count para {_id_value}: {row_count}")
+            #print(f"Row count para {_id_value}: {row_count}")
             values= (
                     formatted_modified_date, formatted_created_date, Created_By_value, compet_ncia_date_value,
                     id_empresa_text_value, pago_boolean_value, repeti__es_number_value, valor_number_value,
@@ -1020,7 +1024,7 @@ def att_bd_azure_obj3(data): # Percorre toda a API do Bubble (todas as paginas)
             
             cursor.execute("SELECT COUNT(*) FROM PRODUTO_CONTAS WHERE _id=?", (_id_value,))
             row_count = cursor.fetchone()[0]
-            print(f"Row count para {_id_value}: {row_count}")
+            #print(f"Row count para {_id_value}: {row_count}")
             
             values = (
                 formatted_modified_date, formatted_created_date, Created_By_value,
@@ -1141,7 +1145,7 @@ def att_bd_azure_obj4(data):
                 
             cursor.execute("SELECT COUNT(*) FROM MOVIMENTACAO_FINANCEIRA WHERE _id=?", (_id_value,))
             row_count = cursor.fetchone()[0]
-            print(f"Row count para {_id_value}: {row_count}")
+            #print(f"Row count para {_id_value}: {row_count}")
             
             values = (
                 formatted_modified_date, formatted_created_date, Created_By_value,apagado_boolean_value, banco_custom_bancos_value,cliente_custom_cliente1_value,
@@ -1218,7 +1222,7 @@ def att_bd_azure_obj5(data):
 
             cursor.execute("SELECT COUNT(*) FROM CENTRO_DE_CUSTOS WHERE _id=?", (_id_value,))
             row_count = cursor.fetchone()[0]
-            print(f"Row count para {_id_value}: {row_count}")
+            #print(f"Row count para {_id_value}: {row_count}")
             values = (
                 Created_By_value,formatted_created_date, id_empresa_custom_empresa_value,id_empresa_text_value,
                 formatted_modified_date,nome_text_value, _id_value
@@ -1293,7 +1297,7 @@ def att_bd_azure_obj6(data):
 
             cursor.execute("SELECT COUNT(*) FROM SUBPLANODECONTAS WHERE _id=?", (_id_value,))
             row_count = cursor.fetchone()[0]
-            print(f"Row count para {_id_value}: {row_count}")
+            #print(f"Row count para {_id_value}: {row_count}")
             values = (
                 formatted_modified_date, formatted_created_date, Created_By_value,id_empresa_text_value,subreceita_text_value,
                 apagado_boolean_value,tiposub_option_tiposubreceita_value,subplanodecontas_text_value,empresa_custom_empresa_value, _id_value
@@ -1363,7 +1367,7 @@ def att_bd_azure_obj7(data):
                 
             cursor.execute("SELECT COUNT(*) FROM PRODUTO_CENTRO_DE_CUSTO WHERE _id=?", (_id_value,))
             row_count = cursor.fetchone()[0]
-            print(f"Row count para {_id_value}: {row_count}")
+            #print(f"Row count para {_id_value}: {row_count}")
             values = (
                 ativo_boolean_value,Created_By_value, formatted_created_date, formatted_modified_date,
                 plano_de_custo_custom_plano_de_custo_value,porcentagem_number_value,_id_value
