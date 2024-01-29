@@ -6,8 +6,8 @@ import os
 
 load_dotenv()
 
-obj1 = "Contas a pagar"
-obj2 = "Contas a receber"
+obj1 = "Contas_a_pagar"
+obj2 = "Contas_a_receber"
 obj3 = "produto_plano_de_contas"
 obj4 = "movimentacao_financeira"
 obj5 = "Centro_de_custos"

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import logging
-from .api_in import ContasPagar_5pg, ContasReceber_5pg,movimentacao_financeira_5pg,centro_de_custos_5pg, sub_planodecontas_5pg,produto_centro_de_custos_5pg,produto_plano_de_contas_5pg
+from api_in import ContasPagar_5pg, ContasReceber_5pg,movimentacao_financeira_5pg,centro_de_custos_5pg, sub_planodecontas_5pg,produto_centro_de_custos_5pg,produto_plano_de_contas_5pg
 import os
 import requests
 import pyodbc
@@ -9,8 +9,8 @@ from dateutil import parser
 import json
 
 obj3 = "produto_plano_de_contas"
-obj2 = "contas a pagar"
-obj1 = "contas a receber"
+obj2 = "contas_a_pagar"
+obj1 = "contas_a_receber"
 obj4 = "movimentacao_financeira"
 obj5 = "Centro_de_custos"
 obj6 = "SubPlanodecontas"
@@ -60,10 +60,61 @@ def visualizar_API(dados):
 
 
 #_____BUSCA POR MAIS DE 50 MIL DADOS DA API_____#
+
+#def overflowdata_produto_contas(url_tg):
+#    cont_pg = 0
+#    estruturas = []
+#    url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+#    while True:
+#        response = requests.get(url_tg)
+#        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+#        try:
+#            data = response.json()
+#            if "response" in data and "results" in data["response"]:
+#                results = data["response"]["results"]
+#                for item in results:
+#                    estrutura = {
+#                        "Modified Date": str(item.get("Modified Date", "")),
+#                        "Created Date": str(item.get("Created Date", "")),
+#                        "Created By": str(item.get("Created By", "")),
+#                        "id_empresa_text": str(item.get("id_empresa_text", "")),
+#                        "ativo_boolean": str(item.get("ativo_boolean", "")),
+#                        "porcentagem_number": str(item.get("porcentagem_number", "")),
+#                       "plano_de_contas_custom_subreceita": str(item.get("plano_de_contas_custom_subreceita", "")),
+#                       "tipo_plano_de_contas_option_tiposubreceita": str(item.get("tipo_plano_de_contas_option_tiposubreceita", "")),
+#                       "unificador_text": str(item.get("unificador_text", "")),
+#                       "visivel_boolean": str(item.get("visivel_boolean", "")),
+#                        "id_produto_centro_decustos": str(item.get("id_produto_centro_decustos", "")),
+#                      "planos_de_custos_list_custom_produto_plano_de_custo": str(item.get("planos_de_custos_list_custom_produto_plano_de_custo", "")),
+#                        "_id": str(item.get("_id", ""))
+#                    }
+#                    estruturas.append(estrutura) 
+#                remaining = data.get("response", {}).get("remaining", 0)
+#                
+#                if remaining == 0:
+#                    #print(estrutura)
+#                    insert_into_databaseFULL_obj3(estruturas)
+#                   #print("Script finalizado PRODUTO PLANO DE CONTAS")
+#                    break
+#                if len(estruturas)==5000:
+#                    insert_into_databaseFULL_obj3(estruturas)
+#                    estruturas.clear()
+#                    #print("Inseriu no banco de dados")
+#                
+#                cont_pg += 100
+#                #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+#                #print(len(estruturas))
+#                url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+#        except json.JSONDecodeError:
+#            print("Erro ao decodificar JSON da API")
+#            return []
+#
+#    return []
+
 def overflowdata_produto_contas(url_tg):
     cont_pg = 0
     estruturas = []
-    url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+    url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=true"
     while True:
         response = requests.get(url_tg)
         response.encoding = 'utf-8'  # Definir a codificação como UTF-8
@@ -92,26 +143,26 @@ def overflowdata_produto_contas(url_tg):
 
                 remaining = data.get("response", {}).get("remaining", 0)
                 
-                if remaining == 0:
-                    #print(estrutura)
-                    insert_into_databaseFULL_obj3(estruturas)
-                    #print("Script finalizado PRODUTO PLANO DE CONTAS")
-                    break
-                if len(estruturas)==5000:
+                if len(estruturas)>8549:
+                    print(estrutura)
                     insert_into_databaseFULL_obj3(estruturas)
                     estruturas.clear()
+                    print("Script finalizado PRODUTO PLANO DE CONTAS")
+                    break
+               # if len(estruturas)==5000:
+                #    insert_into_databaseFULL_obj3(estruturas)
+                 #   estruturas.clear()
                     #print("Inseriu no banco de dados")
                 
                 cont_pg += 100
                 #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
                 #print(len(estruturas))
-                url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+                url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=true"
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
 
     return []
-
 #_____INSERIR NO BANCO AZURE SQL_____#
 def insert_into_databaseFULL_obj3(data):# Full dados obj3 produto_plano_de_contas
     server = os.getenv('SERVER')
@@ -1455,8 +1506,8 @@ att_bd_azure_obj2(dados_contas_a_pagar)
 att_bd_azure_obj1(dados_contas_a_receber)
 
 #_____SALVAR DADOS TXT_____#
-#filename = 'dados_salvos.txt'
-#verificar_API_and_save(dados, filename)
+filename = 'dados_salvos-25-01-24.txt'
+verificar_API_and_save(dados_att_3, filename)
 
 
 logging.info("Script finalizado com sucesso")
