@@ -10,7 +10,7 @@ import json
 
 obj3 = "produto_plano_de_contas"
 obj2 = "contas_a_pagar"
-obj1 = "contas_a_receber"
+obj1 = "contas_a_receber" 
 obj4 = "movimentacao_financeira"
 obj5 = "Centro_de_custos"
 obj6 = "SubPlanodecontas"
@@ -60,61 +60,60 @@ def visualizar_API(dados):
 
 
 #_____BUSCA POR MAIS DE 50 MIL DADOS DA API_____#
-
-#def overflowdata_produto_contas(url_tg):
-#    cont_pg = 0
-#    estruturas = []
-#    url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
-#    while True:
-#        response = requests.get(url_tg)
-#        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
-#        try:
-#            data = response.json()
-#            if "response" in data and "results" in data["response"]:
-#                results = data["response"]["results"]
-#                for item in results:
-#                    estrutura = {
-#                        "Modified Date": str(item.get("Modified Date", "")),
-#                        "Created Date": str(item.get("Created Date", "")),
-#                        "Created By": str(item.get("Created By", "")),
-#                        "id_empresa_text": str(item.get("id_empresa_text", "")),
-#                        "ativo_boolean": str(item.get("ativo_boolean", "")),
-#                        "porcentagem_number": str(item.get("porcentagem_number", "")),
-#                       "plano_de_contas_custom_subreceita": str(item.get("plano_de_contas_custom_subreceita", "")),
-#                       "tipo_plano_de_contas_option_tiposubreceita": str(item.get("tipo_plano_de_contas_option_tiposubreceita", "")),
-#                       "unificador_text": str(item.get("unificador_text", "")),
-#                       "visivel_boolean": str(item.get("visivel_boolean", "")),
-#                        "id_produto_centro_decustos": str(item.get("id_produto_centro_decustos", "")),
-#                      "planos_de_custos_list_custom_produto_plano_de_custo": str(item.get("planos_de_custos_list_custom_produto_plano_de_custo", "")),
-#                        "_id": str(item.get("_id", ""))
-#                    }
-#                    estruturas.append(estrutura) 
-#                remaining = data.get("response", {}).get("remaining", 0)
-#                
-#                if remaining == 0:
-#                    #print(estrutura)
-#                    insert_into_databaseFULL_obj3(estruturas)
-#                   #print("Script finalizado PRODUTO PLANO DE CONTAS")
-#                    break
-#                if len(estruturas)==5000:
-#                    insert_into_databaseFULL_obj3(estruturas)
-#                    estruturas.clear()
-#                    #print("Inseriu no banco de dados")
-#                
-#                cont_pg += 100
-#                #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
-#                #print(len(estruturas))
-#                url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
-#        except json.JSONDecodeError:
-#            print("Erro ao decodificar JSON da API")
-#            return []
-#
-#    return []
-
 def overflowdata_produto_contas(url_tg):
     cont_pg = 0
     estruturas = []
-    url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=true"
+    url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+    while True:
+        response = requests.get(url_tg)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try:
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = {
+                        "Modified Date": str(item.get("Modified Date", "")),
+                        "Created Date": str(item.get("Created Date", "")),
+                        "Created By": str(item.get("Created By", "")),
+                        "id_empresa_text": str(item.get("id_empresa_text", "")),
+                        "ativo_boolean": str(item.get("ativo_boolean", "")),
+                        "porcentagem_number": str(item.get("porcentagem_number", "")),
+                       "plano_de_contas_custom_subreceita": str(item.get("plano_de_contas_custom_subreceita", "")),
+                       "tipo_plano_de_contas_option_tiposubreceita": str(item.get("tipo_plano_de_contas_option_tiposubreceita", "")),
+                       "unificador_text": str(item.get("unificador_text", "")),
+                       "visivel_boolean": str(item.get("visivel_boolean", "")),
+                        "id_produto_centro_decustos": str(item.get("id_produto_centro_decustos", "")),
+                      "planos_de_custos_list_custom_produto_plano_de_custo": str(item.get("planos_de_custos_list_custom_produto_plano_de_custo", "")),
+                        "_id": str(item.get("_id", ""))
+                    }
+                    estruturas.append(estrutura) 
+                remaining = data.get("response", {}).get("remaining", 0)
+                
+                if remaining == 0:
+                    #print(estrutura)
+                    insert_into_databaseFULL_obj3(estruturas)
+                   #print("Script finalizado PRODUTO PLANO DE CONTAS")
+                    break
+                if len(estruturas)==5000:
+                    insert_into_databaseFULL_obj3(estruturas)
+                    estruturas.clear()
+                    #print("Inseriu no banco de dados")
+                
+                cont_pg += 100
+                #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+                #print(len(estruturas))
+                url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+
+    return []
+
+def overflowdata_produto_contas():
+    cont_pg = 0
+    estruturas = []
+    url_tg = f"{url_base}/{obj4}?cursor={cont_pg}&sort_field=Created%20Date&descending=true"
     while True:
         response = requests.get(url_tg)
         response.encoding = 'utf-8'  # Definir a codificação como UTF-8
@@ -158,6 +157,68 @@ def overflowdata_produto_contas(url_tg):
                 #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
                 #print(len(estruturas))
                 url_tg = f"{url_base}/{obj3}?cursor={cont_pg}&sort_field=Created%20Date&descending=true"
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+
+    return []
+
+def overflowdata_movimentacaoFinanceira(url_tg):
+    cont_pg = 0
+    estruturas = []
+    url_tg = f"{url_base}/{obj4}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+    while True:
+        response = requests.get(url_tg)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try: 
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = {
+                        "Modified Date": str(item.get("Modified Date", "")),
+                        "Created Date": str(item.get("Created Date", "")),
+                        "Created By": str(item.get("Created By", "")),
+                        "apagado_boolean": str(item.get("apagado_boolean", "")),
+                        "banco_custom_bancos": str(item.get("banco_custom_bancos", "")),
+                        "cliente_custom_cliente1": str(item.get("cliente_custom_cliente1", "")),
+                        "conciliado_boolean": str(item.get("conciliado_boolean", "")),
+                        "contas_a_receber_custom_contas_a_receber": str(item.get("contas_a_receber_custom_contas_a_receber", "")),
+                        "data_date": str(item.get("data_date", "")),
+                        "fornecedor_custom_fornecedor": str(item.get("fornecedor_custom_fornecedor", "")),
+                        "id_empresa_text": str(item.get("id_empresa_text", "")),
+                        "tipo_option_tipo_de_conta": str(item.get("tipo_option_tipo_de_conta", "")),
+                        "valor_number": item.get("valor_number", 0),
+                        "descricao_text": str(item.get("descricao_text", "")),
+                        "plano_de_contas_custom_subreceita": str(item.get("plano_de_contas_custom_subreceita", "")),
+                        "acrescimo_number": item.get("acrescimo_number", 0),
+                        "decrescimo_number": item.get("decrescimo_number", 0),
+                        "mes_number": item.get("mes_number", 0),
+                        "ano_number": item.get("ano_number", 0),
+                        "produto_plano_de_contas_list_custom_produto_plano_de_contas": str(item.get("produto_plano_de_contas_list_custom_produto_plano_de_contas", "")),
+                        "empresa_custom_empresa": str(item.get("empresa_custom_empresa", "")),
+                        "migrado_boolean": str(item.get("migrado_boolean", "")),
+                        "_id": str(item.get("_id", ""))
+                    }
+                    estruturas.append(estrutura) 
+
+                remaining = data.get("response", {}).get("remaining", 0)
+                
+                if len(estruturas)==5500:
+                    print(estrutura)
+                    inser_into_database_obj4(estruturas)
+                    estruturas.clear()
+                    print("Script finalizado MOVIMENTACAO FINANCEIRA")
+                    break
+               # if len(estruturas)==5000:
+                #    insert_into_databaseFULL_obj4(estruturas)
+                 #   estruturas.clear()
+                    #print("Inseriu no banco de dados")
+                
+                cont_pg += 100
+                #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+                #print(len(estruturas))
+                url_tg = f"{url_base}/{obj4}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
@@ -1473,19 +1534,24 @@ response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 
 #_____Chamada da pasta API_IN.py_____#
 #dados = overflowdata_produto_contas(url_tg_plano_contas)
+dados_4 = overflowdata_movimentacaoFinanceira(url_movimentacao_financeira)
 #dados_contas_a_pagar = ContasPagar(url_tg_contas_a_pagar)
 #dados_contas_a_receber = ContasReceber(url_tg_contas_a_receber)
 #dados_4=Movimentacao_financeira(url_movimentacao_financeira)
 #dados_5=Centro_de_custos(url_Centro_de_custos)
 #dados_6=SubPlanodecontas(url_SubPlanodecontas)
 #dados_7=produto_centro_de_custo(url_produto_centro_de_custo)
-dados_att_3 = produto_plano_de_contas_5pg(url_tg_plano_contas)
-dados_contas_a_pagar = ContasPagar_5pg(url_tg_contas_a_pagar)
-dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
-dados_att_4=movimentacao_financeira_5pg(url_movimentacao_financeira)
-dados_att_5=centro_de_custos_5pg(url_Centro_de_custos)
-dados_att_6=sub_planodecontas_5pg(url_SubPlanodecontas)
-dados_att_7=produto_centro_de_custos_5pg(url_produto_centro_de_custo)
+
+def execution_dados():
+    dados_att_3 = produto_plano_de_contas_5pg(url_tg_plano_contas)
+    dados_contas_a_pagar = ContasPagar_5pg(url_tg_contas_a_pagar)
+    dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
+    dados_att_4=movimentacao_financeira_5pg(url_movimentacao_financeira)
+    dados_att_5=centro_de_custos_5pg(url_Centro_de_custos)
+    dados_att_6=sub_planodecontas_5pg(url_SubPlanodecontas)
+    dados_att_7=produto_centro_de_custos_5pg(url_produto_centro_de_custo)
+
+#execution_dados()
 
 #______SALVA TODOS OS DADOS DO BANCO DE DADOS (BACKUP COMPLETO)______# 
 #insert_into_databaseFULL_obj3(dados)
@@ -1494,20 +1560,23 @@ dados_att_7=produto_centro_de_custos_5pg(url_produto_centro_de_custo)
 #inser_into_database_obj5(dados_5)
 #inser_into_database_obj6(dados_6)
 #inser_into_database_obj7(dados_7)
-#inser_into_database_obj4(dados_4)
+inser_into_database_obj4(dados_4)
 
 #______ATUALIZAR O BANCO DE DADOS_____#
-att_bd_azure_obj7(dados_att_7)
-att_bd_azure_obj6(dados_att_6) 
-att_bd_azure_obj5(dados_att_5) 
-att_bd_azure_obj4(dados_att_4) 
-att_bd_azure_obj3(dados_att_3)
-att_bd_azure_obj2(dados_contas_a_pagar)
-att_bd_azure_obj1(dados_contas_a_receber)
+def execution(dados_att_3,dados_att_7,dados_att_6,dados_att_5,dados_att_4,dados_contas_a_pagar,dados_contas_a_receber):
+    att_bd_azure_obj7(dados_att_7)
+    att_bd_azure_obj6(dados_att_6) 
+    att_bd_azure_obj5(dados_att_5) 
+    att_bd_azure_obj4(dados_att_4) 
+    att_bd_azure_obj3(dados_att_3)
+    att_bd_azure_obj2(dados_contas_a_pagar)
+    att_bd_azure_obj1(dados_contas_a_receber)
+    
+#execution()
 
 #_____SALVAR DADOS TXT_____#
-filename = 'dados_salvos-25-01-24.txt'
-verificar_API_and_save(dados_att_3, filename)
+#filename = 'dados_salvos-25-01-24.txt'
+#verificar_API_and_save(dados_att_3, filename)
 
 
 logging.info("Script finalizado com sucesso")
