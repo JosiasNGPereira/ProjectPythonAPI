@@ -1534,7 +1534,7 @@ response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 
 #_____Chamada da pasta API_IN.py_____#
 #dados = overflowdata_produto_contas(url_tg_plano_contas)
-dados_4 = overflowdata_movimentacaoFinanceira(url_movimentacao_financeira)
+#dados_4 = overflowdata_movimentacaoFinanceira(url_movimentacao_financeira)
 #dados_contas_a_pagar = ContasPagar(url_tg_contas_a_pagar)
 #dados_contas_a_receber = ContasReceber(url_tg_contas_a_receber)
 #dados_4=Movimentacao_financeira(url_movimentacao_financeira)
@@ -1560,7 +1560,7 @@ def execution_dados():
 #inser_into_database_obj5(dados_5)
 #inser_into_database_obj6(dados_6)
 #inser_into_database_obj7(dados_7)
-inser_into_database_obj4(dados_4)
+#inser_into_database_obj4(dados_4)
 
 #______ATUALIZAR O BANCO DE DADOS_____#
 def execution(dados_att_3,dados_att_7,dados_att_6,dados_att_5,dados_att_4,dados_contas_a_pagar,dados_contas_a_receber):
