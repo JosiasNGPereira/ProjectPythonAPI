@@ -124,9 +124,6 @@ def ContasReceber(url_tg): # Percorre toda a API do Bubble (todas as paginas)
             print("Erro ao decodificar JSON da API")
             return []
         
-        
-        
-
     return estruturas
 
 def Movimentacao_financeira(url_tg):
@@ -275,7 +272,7 @@ def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API B
     cursor = 0
     cont =0
     
-    url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=false"
+    url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=true"
     
     #print(cursor)
     while True:
@@ -289,8 +286,8 @@ def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API B
                     estrutura=create_estruturaProduto_contas(item)
                     estruturas.append(estrutura)
                 cursor +=100
-                url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=false"
-                if cont == 40:
+                url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=true"
+                if cont == 100:
                     break
                 cont +=1
             else:
@@ -436,6 +433,7 @@ def movimentacao_financeira_5pg(url):
     cursor = None
     cont =0
 
+    url = f"{url_base}/{obj4}?cursor={cursor}&sort_field=Created%20Date&descending=true"
     response = requests.get(url)
     response.encoding = 'utf-8'
     data = response.json()
@@ -453,8 +451,8 @@ def movimentacao_financeira_5pg(url):
                     estrutura = create_estruturaMovimentacao_financeira(item)
                     estruturas.append(estrutura)   
                 cursor -=100
-                url = f"{url_base}/{obj4}?cursor={cursor}"
-                if cont == 5:
+                url = f"{url_base}/{obj4}?cursor={cursor}&sort_field=Created%20Date&descending=true"
+                if cont == 1000:
                     break
                 cont +=1
             else:
@@ -542,6 +540,7 @@ def produto_centro_de_custos_5pg(url):
     cursor = None
     cont =0
 
+    url = f"{url_base}/{obj7}?cursor={cursor}&sort_field=Created%20Date&descending=true"
     response = requests.get(url)
     response.encoding = 'utf-8'
     data = response.json()
@@ -559,8 +558,8 @@ def produto_centro_de_custos_5pg(url):
                     estrutura = create_estrutura_produto_centro_de_custo(item)
                     estruturas.append(estrutura)   
                 cursor -=100
-                url = f"{url_base}/{obj7}?cursor={cursor}"
-                if cont == 5:
+                url = f"{url_base}/{obj7}?cursor={cursor}&sort_field=Created%20Date&descending=true"
+                if cont == 1000:
                     break
                 
                 cont +=1

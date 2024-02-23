@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import logging
-from api_in import ContasPagar_5pg, ContasReceber_5pg,movimentacao_financeira_5pg,centro_de_custos_5pg, sub_planodecontas_5pg,produto_centro_de_custos_5pg,produto_plano_de_contas_5pg
+from api_in import ContasPagar_5pg, ContasReceber_5pg,movimentacao_financeira_5pg,centro_de_custos_5pg, sub_planodecontas_5pg,produto_centro_de_custos_5pg,produto_plano_de_contas_5pg, ContasPagar,ContasReceber,SubPlanodecontas
 import os
 import requests
 import pyodbc
@@ -219,6 +219,54 @@ def overflowdata_movimentacaoFinanceira(url_tg):
                 #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
                 #print(len(estruturas))
                 url_tg = f"{url_base}/{obj4}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+        except json.JSONDecodeError:
+            print("Erro ao decodificar JSON da API")
+            return []
+
+    return []
+
+def overflowdata_produto_centro_de_custo(url_tg):
+    cont_pg = 0
+    estruturas = []
+    url_tg = f"{url_base}/{obj7}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
+    while True:
+        response = requests.get(url_tg)
+        response.encoding = 'utf-8'  # Definir a codificação como UTF-8
+        try: 
+            data = response.json()
+            if "response" in data and "results" in data["response"]:
+                results = data["response"]["results"]
+                for item in results:
+                    estrutura = {
+                        "ativo_boolean": str(item.get("ativo_boolean", "")),    
+                        "Created By": str(item.get("Created By", "")),
+                        "Created Date": str(item.get("Created Date", "")),
+                        "Modified Date": str(item.get("Modified Date", "")),
+                        "plano_de_custo_custom_plano_de_custo": str(item.get("plano_de_custo_custom_plano_de_custo", "")),
+                        "porcentagem_number": item.get("porcentagem_number", 1),
+                        "_id": str(item.get("_id", ""))
+                    }
+                    estruturas.append(estrutura) 
+
+                remaining = data.get("response", {}).get("remaining", 0)
+                
+                if len(estruturas)==8200:
+                    print(estrutura)
+                    print(len(estruturas))
+                    print("Finalizado leitura API/n/n/n")
+                    inser_into_database_obj7(estruturas)
+                    estruturas.clear()
+                    print("Script finalizado PRODUTO CENTRO DE CUSTO")
+                    break
+               # if len(estruturas)==5000:
+                #    insert_into_databaseFULL_obj4(estruturas)
+                 #   estruturas.clear()
+                    #print("Inseriu no banco de dados")
+                
+                cont_pg += 100
+                #print(f"Paginas faltantes: /{remaining}/ - Contador /{cont_pg}" )
+                #print(len(estruturas))
+                url_tg = f"{url_base}/{obj7}?cursor={cont_pg}&sort_field=Created%20Date&descending=false"
         except json.JSONDecodeError:
             print("Erro ao decodificar JSON da API")
             return []
@@ -1540,18 +1588,18 @@ response.encoding = 'utf-8'  # Definir a codificação como UTF-8
 #dados_4=Movimentacao_financeira(url_movimentacao_financeira)
 #dados_5=Centro_de_custos(url_Centro_de_custos)
 #dados_6=SubPlanodecontas(url_SubPlanodecontas)
-#dados_7=produto_centro_de_custo(url_produto_centro_de_custo)
+#overflowdata_produto_centro_de_custo(url_produto_centro_de_custo)
 
-def execution_dados():
-    dados_att_3 = produto_plano_de_contas_5pg(url_tg_plano_contas)
-    dados_contas_a_pagar = ContasPagar_5pg(url_tg_contas_a_pagar)
-    dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
-    dados_att_4=movimentacao_financeira_5pg(url_movimentacao_financeira)
-    dados_att_5=centro_de_custos_5pg(url_Centro_de_custos)
-    dados_att_6=sub_planodecontas_5pg(url_SubPlanodecontas)
-    dados_att_7=produto_centro_de_custos_5pg(url_produto_centro_de_custo)
 
-#execution_dados()
+dados_att_3 = produto_plano_de_contas_5pg(url_tg_plano_contas)
+dados_contas_a_pagar = ContasPagar_5pg(url_tg_contas_a_pagar)
+dados_contas_a_receber = ContasReceber_5pg(url_tg_contas_a_receber)
+dados_att_4=movimentacao_financeira_5pg(url_movimentacao_financeira)
+dados_att_5=centro_de_custos_5pg(url_Centro_de_custos)
+dados_att_6=sub_planodecontas_5pg(url_SubPlanodecontas)
+dados_att_7=produto_centro_de_custos_5pg(url_produto_centro_de_custo)
+
+
 
 #______SALVA TODOS OS DADOS DO BANCO DE DADOS (BACKUP COMPLETO)______# 
 #insert_into_databaseFULL_obj3(dados)
@@ -1572,11 +1620,11 @@ def execution(dados_att_3,dados_att_7,dados_att_6,dados_att_5,dados_att_4,dados_
     att_bd_azure_obj2(dados_contas_a_pagar)
     att_bd_azure_obj1(dados_contas_a_receber)
     
-#execution()
+execution(dados_att_3,dados_att_7,dados_att_6,dados_att_5,dados_att_4,dados_contas_a_pagar,dados_contas_a_receber)
 
 #_____SALVAR DADOS TXT_____#
 #filename = 'dados_salvos-25-01-24.txt'
-#verificar_API_and_save(dados_att_3, filename)
+#verificar_API_and_save(dados_att_3, filename) 
 
 
 logging.info("Script finalizado com sucesso")
