@@ -287,7 +287,7 @@ def produto_plano_de_contas_5pg(url):# Pecorre apenas a primeira pagina da API B
                     estruturas.append(estrutura)
                 cursor +=100
                 url = f"{url_base}/{obj3}?cursor={cursor}&sort_field=Created%20Date&descending=true"
-                if cont == 200:
+                if cont == 100:
                     break
                 cont +=1
             else:
@@ -452,7 +452,7 @@ def movimentacao_financeira_5pg(url):
                     estruturas.append(estrutura)   
                 cursor -=100
                 url = f"{url_base}/{obj4}?cursor={cursor}&sort_field=Created%20Date&descending=true"
-                if cont == 200:
+                if cont == 100:
                     break
                 cont +=1
             else:
@@ -559,7 +559,7 @@ def produto_centro_de_custos_5pg(url):
                     estruturas.append(estrutura)   
                 cursor -=100
                 url = f"{url_base}/{obj7}?cursor={cursor}&sort_field=Created%20Date&descending=true"
-                if cont == 200:
+                if cont == 100:
                     break
                 
                 cont +=1
