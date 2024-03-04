@@ -1612,13 +1612,13 @@ dados_att_7=produto_centro_de_custos_5pg(url_produto_centro_de_custo)
 
 #______ATUALIZAR O BANCO DE DADOS_____#
 def execution(dados_att_3,dados_att_7,dados_att_6,dados_att_5,dados_att_4,dados_contas_a_pagar,dados_contas_a_receber):
-    #att_bd_azure_obj7(dados_att_7)
-    #att_bd_azure_obj6(dados_att_6) 
-    #att_bd_azure_obj5(dados_att_5) 
-    #att_bd_azure_obj4(dados_att_4) 
+    att_bd_azure_obj7(dados_att_7)
+    att_bd_azure_obj6(dados_att_6) 
+    att_bd_azure_obj5(dados_att_5) 
+    att_bd_azure_obj4(dados_att_4) 
     att_bd_azure_obj3(dados_att_3)
-    #att_bd_azure_obj2(dados_contas_a_pagar)
-    #att_bd_azure_obj1(dados_contas_a_receber)
+    att_bd_azure_obj2(dados_contas_a_pagar)
+    att_bd_azure_obj1(dados_contas_a_receber)
     
 execution(dados_att_3,dados_att_7,dados_att_6,dados_att_5,dados_att_4,dados_contas_a_pagar,dados_contas_a_receber)
 
